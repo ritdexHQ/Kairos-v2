@@ -1,0 +1,28 @@
+{
+    "ETH/USDT": {
+        "side": "BUY",
+        "entry_price": 2062.733706,
+        "amount": 0.3393,
+        "leverage": 7,
+        "time": "21:36:16",
+        "sl_price": 2090.9075438686855,
+        "tp_price": 2006.386030262629,
+        "chien_luoc": "RSI",
+        "diem": 1,
+        "ly_do_mo": "Đồng thuận Tăng 7/8 | RSI_1H: 52.20",
+        "packet_ml": null
+    },
+    "BTC/USDT": {
+        "side": "BUY",
+        "entry_price": 66873.81195,
+        "amount": 0.0105,
+        "leverage": 7,
+        "time": "21:36:32",
+        "sl_price": 67553.36894553537,
+        "tp_price": 65514.69795892925,
+        "chien_luoc": "RSI",
+        "diem": 1,
+        "ly_do_mo": "Đồng thuận Tăng 7/8 | RSI_1H: 53.60",
+        "packet_ml": null
+    }
+}

@@ -22,6 +22,8 @@ from chien_luoc.logic_vectorized.chien_luoc.chien_luoc_mean_reversion   import c
 from chien_luoc.logic_vectorized.chien_luoc.chien_luoc_scalping         import chien_luoc_scalping
 from chien_luoc.logic_vectorized.chien_luoc_trang_thai_thi_truong       import loc_trang_thai_thi_truong
 from chien_luoc.logic_vectorized.stoploss_takeprofit                    import them_sl_tp
+from chien_luoc.logic_vectorized.phan_tich_ky_thuat.vi_the              import pt_vi_the
+from chien_luoc.logic_vectorized.phan_tich_ky_thuat.chu_ky              import pt_phien_giao_dich
 
 
 REGIME_TO_STRATEGY = {
@@ -105,6 +107,12 @@ def tong_hop_tin_hieu(df_1m, df_3m, df_5m, df_15m, df_30m, df_1h, df_4h, df_1d, 
 
     # Thêm bộ lọc thị trường
     df_base = loc_trang_thai_thi_truong(df_base)
+
+    # Thêm thông tin vị thế & tâm lý (CVD proxy từ OHLCV)
+    df_base = pt_vi_the(df_base, '1m')
+
+    # Thêm thông tin phiên giao dịch (Asian / London / NY / Overlap)
+    df_base = pt_phien_giao_dich(df_base, '1m')
 
     # Xóa tín hiệu trong giờ không được phép
     df_base.loc[~df_base['trade_allowed'], 'signal'] = 0

@@ -1,45 +1,23 @@
 <div align="center">
- 
-<img width="224" height="224" alt="image" src="https://github.com/user-attachments/assets/5a1b5bcf-e6bb-4d92-a4a7-0c55697ba30e" />
 
-# KAIROS QUANT SYSTEM
-### **End-to-End Data Analytics System for Strategy Optimization in Financial Markets**
+# 🤖 KAIROS QUANT SYSTEM v2.0
 
-[![Python](https://img.shields.io/badge/Python-3.12+-blue?style=for-the-badge&logo=python)](https://www.python.org/)
-[![Market](https://img.shields.io/badge/Market-Crypto-orange?style=for-the-badge)](https://www.binance.com/)
-[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](https://opensource.org/licenses/MIT)
+**HỆ SINH THÁI GIAO DỊCH ĐỊNH LƯỢNG TỰ ĐỘNG & PHÂN TÍCH DỮ LIỆU CHUYÊN SÂU CHO THỊ TRƯỜNG CRYPTOCURRENCY**
 
-`Python` • `Pandas` • `Polars` • `Scikit-Learn` • `ETL Pipeline` • `Backtesting` • `Quant Analysis`
+[![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
+[![PyTorch](https://img.shields.io/badge/PyTorch-2.x-EE4C2C?style=flat-square&logo=pytorch&logoColor=white)](https://pytorch.org/)
+[![Polars](https://img.shields.io/badge/Polars-High_Performance-CD792C?style=flat-square)](https://pola.rs/)
+[![Pandas](https://img.shields.io/badge/Pandas-Data_Analysis-150458?style=flat-square&logo=pandas)](https://pandas.pydata.org/)
+[![PyQt6](https://img.shields.io/badge/PyQt6-Desktop_GUI-41CD52?style=flat-square&logo=qt)](https://www.riverbankcomputing.com/software/pyqt/)
+[![CCXT](https://img.shields.io/badge/CCXT-Multi_Exchange-2EA043?style=flat-square)](https://github.com/ccxt/ccxt)
+[![scikit-learn](https://img.shields.io/badge/scikit--learn-ML-F7931E?style=flat-square&logo=scikit-learn)](https://scikit-learn.org/)
+[![License](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](LICENSE)
 
-<div align="left">
- 
------
+</div>
 
-### 🚀 Điểm nổi bật của dự án (Project Highlights)
+---
 
-  * **Xây dựng hệ thống phân tích dữ liệu:** Giao dịch từ nhiều nguồn (**Binance, OKX, Bybit**) nhằm hỗ trợ ra quyết định dựa trên dữ liệu.
-  * **Thiết kế pipeline ETL tự động:** Thu thập, xử lý và chuẩn hóa dữ liệu đa khung thời gian (**1m–1d**).
-  * **Phân tích dữ liệu lịch sử quy mô lớn:** Xử lý hàng triệu dòng dữ liệu để xác định các pattern thị trường (**trend, breakout, mean-reversion**).
-  * **Phát triển hệ thống backtesting:** Đánh giá hiệu suất và so sánh các chiến lược giao dịch một cách khách quan.
-  * **Ứng dụng Machine Learning:** Phân loại trạng thái thị trường và hỗ trợ cải thiện chất lượng tín hiệu.
-  * **Trực quan hóa dữ liệu:** Hiển thị hiệu suất thông qua dashboard phục vụ phân tích và ra quyết định chuyên sâu.
-
------
-
-### 📊 Minh họa Backtesting
-
-![$RV424Z6](https://github.com/user-attachments/assets/4883c4f4-e1ca-4e34-b806-220ae38faccc)
-
------
-
-## 📊 Kết quả đạt được (Key Results)
-
-- Xử lý dữ liệu lịch sử quy mô lớn (hàng triệu dòng) trên nhiều năm  
-- Tăng tốc backtesting bằng phương pháp vector hóa, nhanh hơn đáng kể so với xử lý tuần tự (loop)  
-- Hỗ trợ phân tích đa khung thời gian (từ 1 phút đến 1 ngày)  
-- Tự động hóa toàn bộ quy trình từ thu thập, xử lý đến phân tích dữ liệu  
-
-## 📖 Mục lục tổng quan (Table of Contents)
+## 📖 MỤC LỤC TỔNG QUAN
 
 1. [Tầm nhìn & Triết lý hệ thống (Vision & Philosophy)](#1)
 2. [Giới thiệu chung (Overview)](#2)
@@ -229,21 +207,47 @@ Hệ thống không cộng dồn một cách máy móc, mà sử dụng công th
 
 ## 7\. HỆ THỐNG BACKTEST & TRỰC QUAN HÓA (PYQT6 DASHBOARD)
 
-KAIROS sở hữu một phần mềm Desktop chuyên dụng được xây dựng bằng **PyQt6**, biến dữ liệu khô khan thành các Insight có giá trị.
+KAIROS sở hữu một phần mềm Desktop chuyên dụng xây dựng bằng **PyQt6 + PyQtGraph**, biến dữ liệu khô khan thành Insight có giá trị.
 
-  * **Interactive UI (Giao diện tương tác):** Thiết kế dạng Dockable Widgets (kéo thả linh hoạt các cửa sổ) giúp người dùng tùy biến không gian làm việc.
-  * **Siêu tốc độ với Polars:** Lọc hàng triệu dòng kết quả giao dịch (theo Ngày, Giờ, Coin, Long/Short) chỉ trong tích tắc.
-  * **Daily PnL & Intraday Equity Curve:** Biểu đồ hiển thị lợi nhuận từng ngày. Click vào một ngày cụ thể để phân tích chi tiết từng lệnh được đánh trong ngày hôm đó.
-  * **Heatmap & Time Distribution:** Biểu đồ nhiệt phân tích hành vi giá. Trả lời câu hỏi: *"Hệ thống kiếm được nhiều tiền nhất vào thứ mấy trong tuần? Khung giờ nào có tỷ lệ Win cao nhất?"*
-  * **Trade Scatter Plot:** Biểu đồ phân tán (Scatter) đo lường mối tương quan giữa Thời gian giữ lệnh (Hold Duration) và Lợi nhuận (PnL). Giúp phát hiện lỗi "gồng lỗ quá lâu" hoặc "chốt lời quá sớm".
-    
-<img width="1920" height="1080" alt="Ảnh chụp màn hình (520)" src="https://github.com/user-attachments/assets/e01c8ea9-eb98-4673-b681-41fdb774d801" />
+### Backtest Dashboard — Kết quả kiểm thử chiến lược
 
------
+![Backtest Dashboard](assets/backtest_dashboard.png)
 
-<a name="8"></a>
+*Backtest tháng 01/2026: 559 lệnh được thực thi giả lập. Dashboard hiển thị lãi/lỗ hàng ngày (Daily PnL Bar), lịch giao dịch theo tuần, phân phối lệnh theo khung thời gian giữ lệnh, và các chỉ số hiệu suất chuyên sâu.*
 
-## 8\. QUẢN TRỊ RỦI RO & QUẢN LÝ VỐN (RISK MANAGEMENT)
+### Demo Dashboard — Giao dịch giả lập realtime
+
+![Demo Dashboard](assets/demo_dashboard.png)
+
+*Paper Trading đang chạy với 14 vị thế mở đồng thời. Market Heatmap hiển thị tín hiệu 7 khung thời gian (1m → 1d) cho 40+ coin. Lịch sử lệnh với lý do đóng chi tiết (SL giá, TP giá, tín hiệu đảo chiều).*
+
+### Các tính năng Dashboard
+
+**📊 Tab Backtest & Phân tích Chiến lược**
+
+| Widget | Chức năng |
+|--------|----------|
+| Daily PnL Chart | Biểu đồ nến lãi/lỗ hàng ngày — click vào ngày để xem chi tiết lệnh |
+| Trade Calendar | Heatmap lịch — màu sắc biểu thị cường độ PnL theo ngày trong tháng |
+| Phân phối lệnh | Histogram thời gian giữ lệnh (1m, 5m, 15m, 1h, 4h, 1d, >1d) |
+| Chỉ số hiệu suất | Win Rate, Profit Factor, R:R, Kỳ vọng/lệnh, Lợi nhuận TB, Thua lỗ TB |
+| Equity Curve | Đường tài sản tổng hợp + max drawdown visualization |
+| Trade Scatter | PnL vs Hold Duration — phát hiện "gồng lỗ" hay "chốt lời sớm" |
+| Long vs Short | So sánh hiệu suất Long/Short riêng biệt |
+| Kết quả theo coin | Bảng xếp hạng coin theo tổng PnL |
+
+**🟢 Tab Realtime & Demo**
+
+| Widget | Chức năng |
+|--------|----------|
+| Market Heatmap | Bảng nhiệt 40+ coin × 7 timeframe — màu xanh/đỏ theo tín hiệu ML |
+| Vị thế đang mở | Bảng real-time: Symbol, Side, Entry Price, Size, Thời gian |
+| Tổng quan tài khoản | Equity, PnL ròng, Win Rate, Tổng lệnh |
+| Lịch sử giao dịch | Bảng cuộn: Symbol, PnL, Thời lượng giữ lệnh, Lý do đóng |
+
+---
+
+## 8. QUẢN TRỊ RỦI RO & QUẢN LÝ VỐN (RISK MANAGEMENT)
 
 Được thiết kế với tư duy của dân Tài chính định lượng, rủi ro là yếu tố được đặt lên hàng đầu:
 

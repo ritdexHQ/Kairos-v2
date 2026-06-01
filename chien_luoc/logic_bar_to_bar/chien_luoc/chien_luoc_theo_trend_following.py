@@ -1,65 +1,130 @@
-﻿"""
+"""
 chien_luoc/logic_bar_to_bar/chien_luoc/chien_luoc_theo_trend_following.py – Theo xu hướng
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Tín hiệu: EMA hướng + ATR xác nhận biến động + RSI hỗ trợ.
-Khung dài (1D/4H) có trọng số cao hơn để tránh noise ngắn hạn.
-Dùng khi ML phát hiện regime Xu_Hướng_Mạnh (state 3) hoặc Đầu_Xu_Hướng (state 2).
+Logic: Vào lệnh cùng chiều xu hướng khi các khung đồng thuận.
+  • EMA hướng xác định chiều (TĂNG/GIẢM)
+  • ATR cao → biến động đủ để chạy → tăng điểm
+  • RSI hỗ trợ xu hướng (>50 TĂNG, <50 GIẢM)
+  • Khung dài (1D/4H) trọng số cao hơn để lọc nhiễu ngắn hạn
+
+Dùng khi ML phát hiện: Đầu_Xu_Hướng (state 2) hoặc Xu_Hướng_Mạnh (state 3).
 """
 from joblib import Parallel, delayed
 from chien_luoc.logic_bar_to_bar.phan_tich_ky_thuat.bien_dong import pt_atr
-from chien_luoc.logic_bar_to_bar.phan_tich_ky_thuat.xu_huong import pt_ema_trend
+from chien_luoc.logic_bar_to_bar.phan_tich_ky_thuat.xu_huong import pt_ema_trend, pt_adx
 from chien_luoc.logic_bar_to_bar.phan_tich_ky_thuat.dong_luong_dao_chieu import pt_rsi
 
 
-#df_1m có 300 nến, df_3m có 100 nến, df_5m có 300 nến, df_15m có 100 nến, df_30m có 300 nến, df_1h có 150 nến, df_4h có 300 nến, df_1d có 50 nến
-def tinh_toan_diem_xu_huong_don_vi(df, name, weight):
-    """Xử lý tính toán cho từng khung thời gian trên một nhân CPU riêng biệt"""
-    # 1. Gọi các hàm chỉ báo (Đảm bảo các hàm này đã được import)
+def _tinh_diem_trend(df, name, weight):
+    """Tính điểm xu hướng cho một khung (Polars DataFrame)."""
+    if df is None or df.height < 30:
+        return 0, ""
+
     ema = pt_ema_trend(df)
     atr = pt_atr(df)
     rsi = pt_rsi(df)
-    
-    diem_khung = 0
-    
-    # Tính toán điểm dựa trên EMA
+    adx = pt_adx(df)
+
+    if not all([ema, atr, rsi, adx]):
+        return 0, ""
+
+    diem = 0
+
     if ema['trang_thai'] == 'TĂNG':
-        diem_khung += weight
-    else:
-        diem_khung -= weight
-            
-    # 2. Hệ số nhân từ ATR (Biến động cao thì tin tưởng xu hướng hơn)
-    if atr['trang_thai'] == 'BIẾN_ĐỘNG_CAO':
-        diem_khung += (1 if ema['trang_thai'] == 'TĂNG' else -1) * (weight * 0.5)
-            
-    # 3. Hỗ trợ từ RSI
-    if rsi['trang_thai'] == 'MẠNH' and ema['trang_thai'] == 'TĂNG':
-        diem_khung += weight * 0.2
-    elif rsi['trang_thai'] == 'YẾU' and ema['trang_thai'] == 'GIẢM':
-        diem_khung -= weight * 0.2
+        diem += weight
+        # Biến động cao = xu hướng có lực → cộng thêm
+        if atr['trang_thai'] == 'BIẾN_ĐỘNG_CAO':
+            diem += weight * 0.5
+        # RSI xác nhận đà tăng
+        if rsi['trang_thai'] == 'MẠNH':
+            diem += weight * 0.3
+        # ADX xác nhận xu hướng thật (không phải nhiễu)
+        if adx['trang_thai'] == 'CO_XU_HUONG':
+            diem += weight * 0.5
 
-    # Tạo thông điệp lý do cho khung này
-    msg = f"{name}: {ema['trang_thai']} (RSI {rsi['trang_thai']})"
-    
-    return diem_khung, msg
+    elif ema['trang_thai'] == 'GIẢM':
+        diem -= weight
+        if atr['trang_thai'] == 'BIẾN_ĐỘNG_CAO':
+            diem -= weight * 0.5
+        if rsi['trang_thai'] == 'YẾU':
+            diem -= weight * 0.3
+        if adx['trang_thai'] == 'CO_XU_HUONG':
+            diem -= weight * 0.5
 
-def phan_tich_theo_xu_huong(df_1m, df_3m, df_5m, df_15m, df_30m, df_1h, df_4h, df_1d):
-    danh_sach_khung = [
-        (df_1d, "1D", 10),
-        (df_4h, "4H", 8),
-        (df_1h, "1H", 5),
-        (df_15m, "15M", 3),
-        (df_5m, "5M", 2)
+    ly_do = f"{name}: {ema['trang_thai']} | ADX={adx['adx_val']:.1f} | RSI={rsi['rsi_val']:.1f}"
+    return diem, ly_do
+
+
+def phan_tich_theo_trend(symbol, df_1m, df_3m, df_5m, df_15m, df_30m, df_1h, df_4h, df_1d, MarketSnapshot=None):
+    """Phân tích xu hướng đa khung. Trả về (tin_hieu, diem, ly_do)."""
+    cau_hinh_khung = [
+        (df_1d,  "1D",  10),  # macro trend – quyết định chiều lớn
+        (df_4h,  "4H",   8),  # swing trend
+        (df_1h,  "1H",   5),  # intraday trend
+        (df_15m, "15M",  3),
+        (df_5m,  "5M",   2),
     ]
 
-    ket_qua = Parallel(n_jobs=-1)(
-        delayed(tinh_toan_diem_xu_huong_don_vi)(df, name, weight) 
-        for df, name, weight in danh_sach_khung
+    ket_qua = Parallel(n_jobs=-1, prefer="threads")(
+        delayed(_tinh_diem_trend)(df, name, w)
+        for df, name, w in cau_hinh_khung
     )
 
-    diem_tong = sum(res[0] for res in ket_qua)
-    ly_do_list = [res[1] for res in ket_qua if res[1] != ""]
-    
-    tin_hieu = 'buy' if diem_tong > 15 else ('sell' if diem_tong < -15 else None)
+    tong_diem = sum(r[0] for r in ket_qua)
+    ly_do     = " | ".join(r[1] for r in ket_qua if r[1])
 
-    # TRẢ VỀ: 3 giá trị (để hàm vao_lenh nhận đủ)
-    return tin_hieu, round(diem_tong, 2), "; ".join(ly_do_list)
+    # OrderFlow: CVD đồng thuận thì cộng điểm xác nhận
+    if MarketSnapshot:
+        delta     = MarketSnapshot.get("delta", 0)
+        imbalance = MarketSnapshot.get("imbalance", 0)
+        if tong_diem > 0 and delta > 0 and imbalance > 0.1:
+            tong_diem += 5
+            ly_do += " | OrderFlow xác nhận BUY"
+        elif tong_diem < 0 and delta < 0 and imbalance < -0.1:
+            tong_diem -= 5
+            ly_do += " | OrderFlow xác nhận SELL"
+
+    NGUONG = 20
+    tin_hieu = ("buy"  if tong_diem >=  NGUONG else
+                "sell" if tong_diem <= -NGUONG else None)
+
+    return tin_hieu, round(tong_diem, 2), ly_do
+
+
+def thoat_theo_trend(df_1m, df_3m, df_5m, df_15m, df_30m, df_1h, df_4h, df_1d, MarketSnapshot=None):
+    """
+    Thoát khi xu hướng suy yếu:
+      • EMA 1H lật chiều, HOẶC
+      • ADX giảm dưới 20 (xu hướng tan rã)
+    """
+    if df_1h is None or df_1h.height < 30:
+        return None, 0, "Thiếu dữ liệu"
+
+    ema_1h = pt_ema_trend(df_1h)
+    adx_1h = pt_adx(df_1h)
+    ema_4h = pt_ema_trend(df_4h) if df_4h is not None and df_4h.height >= 30 else None
+
+    ly_do_thoat = []
+    diem_thoat  = 0
+
+    # EMA 1H đổi chiều → xu hướng chuyển sang giai đoạn khác
+    if ema_1h['muc_do'] == 'TỐT':
+        diem_thoat += 10
+        ly_do_thoat.append(f"EMA 1H đổi chiều: {ema_1h['trang_thai']}")
+
+    # ADX thấp = xu hướng không còn lực
+    if adx_1h['trang_thai'] == 'SIDEWAY':
+        diem_thoat += 8
+        ly_do_thoat.append(f"ADX={adx_1h['adx_val']:.1f} – xu hướng tan rã")
+
+    # Nếu 4H cũng đổi chiều thì chắc chắn hơn
+    if ema_4h and ema_4h['muc_do'] == 'TỐT':
+        diem_thoat += 5
+        ly_do_thoat.append(f"EMA 4H đổi chiều: {ema_4h['trang_thai']}")
+
+    if diem_thoat >= 15:
+        # Dùng EMA 1H để biết nên thoát về phía nào
+        tin_hieu = "sell" if ema_1h['trang_thai'] == 'TĂNG' else "buy"
+        return tin_hieu, diem_thoat, " | ".join(ly_do_thoat)
+
+    return None, 0, "Giữ lệnh"

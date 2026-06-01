@@ -37,7 +37,7 @@ def chien_luoc_vao_lenh(symbol, Datetime, df_1m, df_3m, df_5m, df_15m, df_30m, d
     if packet is None:
         return None, 0, None, "AI: Không đủ dữ liệu / Lỗi Model", None
 
-    chien_luoc = packet['state_name']
+    chien_luoc = packet['strategy_name']
 
     tin_hieu, diem, ly_do = None, 0, []
 

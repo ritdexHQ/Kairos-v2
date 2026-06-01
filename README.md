@@ -6,10 +6,12 @@
 ### **End-to-End Data Analytics Pipeline for Financial Market Research**
 
 [![Python](https://img.shields.io/badge/Python-3.12+-blue?style=for-the-badge&logo=python)](https://www.python.org/)
-[![Market](https://img.shields.io/badge/Domain-FinTech%20%2F%20Crypto-orange?style=for-the-badge)](https://www.binance.com/)
+[![Domain](https://img.shields.io/badge/Domain-FinTech%20%2F%20Crypto-orange?style=for-the-badge)](https://www.binance.com/)
 [![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
 `Python` • `Pandas` • `Polars` • `Scikit-Learn` • `PyTorch` • `ETL Pipeline` • `Time-Series` • `Feature Engineering`
+
+</div>
 
 <div align="left">
  
@@ -166,9 +168,9 @@ graph TD
     C -->|50+ Features MTF| D[ML Classification - Market Regime]
     D -->|Regime Label| E[Signal Engine - Multi-Strategy Voting]
     E -->|Weighted Score| F{Risk & Validation Layer}
-    F -->|Validated Signal| G[Execution / Forward Test]
+    F -->|Validated Signal| G[Model Output / Forward Test]
     F -->|Rejected| B
-    G -->|Trade Log| H[Analytics Dashboard - PyQt6]
+    G -->|Result Log| H[Analytics Dashboard - PyQt6]
 
     I[Historical Data Store] -->|Backtest Input| C
     I --> J[Vectorized Backtest Engine]
@@ -412,9 +414,11 @@ pip install -r requirements.txt
 | `numpy` | Vectorized computations |
 | `pytorch` | ML model training & inference |
 | `scikit-learn` | Preprocessing, metrics |
-| `ccxt` | Exchange API connector |
+| `ccxt` | Exchange API connector (data source) |
 | `pyqt6` | Analytics dashboard UI |
 | `websocket-client` | Streaming data pipeline |
+
+-----
 
 <a name="11"></a>
 
@@ -422,21 +426,21 @@ pip install -r requirements.txt
 
 ### 11.1 Cấu hình phân tích (YAML)
 
-Thiết lập file `config/cau_hinh_giao_dich.yaml`:
+Thiết lập file `config/cau_hinh_giao_dich.yaml` — định nghĩa nguồn dữ liệu và tham số cho pipeline:
 
 ```yaml
-san_giao_dich_chinh: "binance"   # Nguồn dữ liệu chính
-cap_giao_dich:
+san_giao_dich_chinh: "binance"   # Data source: binance / okx / bybit
+cap_giao_dich:                   # Danh sách assets cần phân tích
   - "BTC/USDT"
   - "ETH/USDT"
   - "SOL/USDT"
 
-# Tham số quản trị rủi ro
-von_moi_lenh_usdt: 100
-don_bay: 7
-max_lenh_cho_phep: 20
-cat_lo_percent: 0.1
-chot_loi_percent: 0.15
+# Tham số simulation & risk model
+von_moi_lenh_usdt: 100           # Capital allocation per signal ($)
+don_bay: 7                       # Leverage multiplier (futures sim)
+max_lenh_cho_phep: 20            # Max concurrent positions
+cat_lo_percent: 0.1              # Stop-loss threshold (10%)
+chot_loi_percent: 0.15           # Take-profit threshold (15%)
 ```
 
 ### 11.2 Khởi chạy
@@ -478,9 +482,11 @@ Repository này là bản nền tảng (v1.0) mang tính Proof-of-Concept về k
 
 ### 👨‍💻 THÔNG TIN TÁC GIẢ
 
-* **Vai trò:** Quant Developer / Data Analyst
+* **Vai trò:** Data Analyst · Quant Researcher
 * **Stack:** Python · Pandas · Polars · PyTorch · PyQt6 · CCXT
 * **Phương pháp:** Data-driven design · Statistical validation · Human logic + AI-assisted development
 * **Contact:** ppvinh1513@gmail.com
 
 *"Romain Rolland: 'There is only one heroism in the world: to see the world as it is, and to love it.'"*
+
+</div>

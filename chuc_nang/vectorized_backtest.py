@@ -28,8 +28,9 @@ try:
 
     from lay_du_lieu.lay_ohlcv import tai_du_lieu_lich_su, chuan_bi_du_lieu_da_khung_vectorized
 
-    from chien_luoc.logic_vectorized.chien_luoc.chien_luoc_breakout import chien_luoc_breakout
-   
+    from chien_luoc.logic_vectorized.quan_ly_chien_luoc import tong_hop_tin_hieu
+    from ml.trang_thai_thi_truong_ml.ml_predict import du_doan_trang_thai_ml_vector
+
 except ImportError as e:
     logger.info(f"❌ Lỗi Import: {e}")
     logger.info("Vui lòng chạy script từ thư mục gốc hoặc đảm bảo cấu trúc thư mục đúng.")
@@ -64,9 +65,11 @@ def vectorized_backtest():
         # Chuẩn bị dữ liệu đa khung (Vectorized)
         df_1m, df_3m, df_5m, df_15m, df_30m, df_1h, df_4h, df_1d = chuan_bi_du_lieu_da_khung_vectorized(df_goc)
 
-        df = chien_luoc_breakout(df_1m, df_3m, df_5m, df_15m, df_30m, df_1h, df_4h, df_1d)
+        # ML regime detection trên toàn bộ dataset
+        df_regime = du_doan_trang_thai_ml_vector(df_goc)
 
-        print(df)
+        # Tổng hợp tín hiệu từ tất cả chiến lược dựa trên regime
+        df = tong_hop_tin_hieu(df_1m, df_3m, df_5m, df_15m, df_30m, df_1h, df_4h, df_1d, df_regime)
 
         # Đảm bảo cột timestamp hợp lệ
         if 'timestamp' not in df.columns:
@@ -77,66 +80,88 @@ def vectorized_backtest():
         gia_vao = 0
         co_tin_hieu = 0
         
-        # Chuyển sang giá trị list để loop nhanh hơn .iloc
-        signals = df['signal'].values
-        opens = df['open'].values
-        closes = df['close'].values
-        times = df['timestamp'].values
+        # Chuyển sang mảng numpy để loop nhanh
+        signals  = df['signal'].values
+        opens    = df['open'].values
+        closes   = df['close'].values
+        times    = df['timestamp'].values
+        sl_pcts  = df['sl_pct'].values  if 'sl_pct'  in df.columns else [0.05] * len(df)
+        tp_pcts  = df['tp_pct'].values  if 'tp_pct'  in df.columns else [0.10] * len(df)
+        leverages = df['leverage'].values if 'leverage' in df.columns else [DON_BAY] * len(df)
+
+        sl_gia = 0.0
+        tp_gia = 0.0
 
         for i in range(len(df)):
             tin_hieu_hien_tai = signals[i]
-            gia_open = opens[i]
+            gia_open  = opens[i]
             gia_close = closes[i]
+            gia_high  = df['high'].values[i] if 'high' in df.columns else gia_close
+            gia_low   = df['low'].values[i]  if 'low'  in df.columns else gia_close
             thoi_gian = times[i]
+            don_bay_i = int(leverages[i])
 
-            # A. THỰC THI KHỚP LỆNH PENDING (Vào lệnh tại Open nến mới)
+            # A. VÀO LỆNH tại Open nến sau khi tín hiệu xuất hiện
             if co_tin_hieu != 0 and vi_the == 0:
-                vi_the = co_tin_hieu
-                # Giá vào = Open nến hiện tại + Slippage (mô phỏng trượt giá thực tế)
+                vi_the  = co_tin_hieu
                 phi_truot = gia_open * SLIPPAGE
                 gia_vao = gia_open + phi_truot if vi_the == 1 else gia_open - phi_truot
-                
-                # Trừ phí lượt MỞ ngay khi vào lệnh
-                phi_mo = (VON_MOI_LENH * DON_BAY) * PHI_GD
-                von_hien_tai -= phi_mo
-                
-                co_tin_hieu = 0 
 
-            # B. KIỂM TRA ĐÓNG LỆNH (Dựa trên tín hiệu nến vừa đóng)
+                # SL/TP theo ATR động
+                sl_pct_i = sl_pcts[i - 1] if i > 0 else 0.05
+                tp_pct_i = tp_pcts[i - 1] if i > 0 else 0.10
+                if vi_the == 1:
+                    sl_gia = gia_vao * (1 - sl_pct_i)
+                    tp_gia = gia_vao * (1 + tp_pct_i)
+                else:
+                    sl_gia = gia_vao * (1 + sl_pct_i)
+                    tp_gia = gia_vao * (1 - tp_pct_i)
+
+                phi_mo = (VON_MOI_LENH * don_bay_i) * PHI_GD
+                von_hien_tai -= phi_mo
+                co_tin_hieu   = 0
+
+            # B. KIỂM TRA ĐÓNG LỆNH
             elif vi_the != 0:
                 can_thoat = False
-                # Nếu đang Long (1) mà tín hiệu không còn là 1 -> Thoát
-                if vi_the == 1 and tin_hieu_hien_tai != 1:
-                    can_thoat = True
-                    pnl_raw = (gia_close - gia_vao) / gia_vao * (VON_MOI_LENH * DON_BAY)
-                    loai = 'LONG'
-                # Nếu đang Short (-1) mà tín hiệu không còn là -1 -> Thoát
-                elif vi_the == -1 and tin_hieu_hien_tai != -1:
-                    can_thoat = True
-                    pnl_raw = (gia_vao - gia_close) / gia_vao * (VON_MOI_LENH * DON_BAY)
-                    loai = 'SHORT'
+                loai      = 'LONG' if vi_the == 1 else 'SHORT'
+                gia_dong  = gia_close
+
+                if vi_the == 1:
+                    if gia_high >= tp_gia:
+                        can_thoat = True; gia_dong = tp_gia
+                    elif gia_low <= sl_gia:
+                        can_thoat = True; gia_dong = sl_gia
+                    elif tin_hieu_hien_tai != 1:
+                        can_thoat = True
+                else:
+                    if gia_low <= tp_gia:
+                        can_thoat = True; gia_dong = tp_gia
+                    elif gia_high >= sl_gia:
+                        can_thoat = True; gia_dong = sl_gia
+                    elif tin_hieu_hien_tai != -1:
+                        can_thoat = True
 
                 if can_thoat:
-                    # Trừ phí lượt ĐÓNG
-                    phi_dong = (VON_MOI_LENH * DON_BAY) * PHI_GD
-                    # Phí trượt giá lượt đóng (ước tính trên giá close)
-                    truot_gia_dong = (VON_MOI_LENH * DON_BAY) * SLIPPAGE
-                    
-                    pnl_net = pnl_raw - phi_dong - truot_gia_dong
+                    pnl_raw  = ((gia_dong - gia_vao) / gia_vao if vi_the == 1
+                                else (gia_vao - gia_dong) / gia_vao) * (VON_MOI_LENH * don_bay_i)
+                    phi_dong = (VON_MOI_LENH * don_bay_i) * (PHI_GD + SLIPPAGE)
+                    pnl_net  = pnl_raw - phi_dong
                     von_hien_tai += pnl_net
-                    
+
                     tong_lich_su_lenh.append({
-                        'Symbol': symbol, 
-                        'Loại': loai,
-                        'Giá vào': gia_vao,
-                        'Giá đóng': gia_close, 
-                        'PnL': pnl_net, 
-                        'Time': thoi_gian,
-                        'Balance': von_hien_tai
+                        'Symbol':   symbol,
+                        'Loại':     loai,
+                        'Giá vào':  gia_vao,
+                        'Giá đóng': gia_dong,
+                        'Leverage': don_bay_i,
+                        'PnL':      pnl_net,
+                        'Time':     thoi_gian,
+                        'Balance':  von_hien_tai
                     })
                     vi_the = 0
 
-            # C. GHI NHẬN TÍN HIỆU MỚI (Chỉ khi đang trống vị thế)
+            # C. GHI NHẬN TÍN HIỆU MỚI
             if vi_the == 0 and tin_hieu_hien_tai != 0:
                 co_tin_hieu = tin_hieu_hien_tai
 

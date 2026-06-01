@@ -1,63 +1,64 @@
-from chien_luoc.logic_vectorized.phan_tich_ky_thuat.dong_luong_dao_chieu import pt_rsi
+"""
+chien_luoc/logic_vectorized/chien_luoc/chien_luoc_scalping.py – Scalping vectorized
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Logic: RSI extreme + giá chạm biên Bollinger + volume xác nhận trên khung ngắn.
+  • Tín hiệu chính: 1M + 3M + 5M
+  • Lọc bằng 15M: không vào ngược trend mạnh (ADX > 35)
+Trả về DataFrame với cột `signal` và `entry_signal`.
+"""
+import numpy as np
 from utils.ham_tien_ich import gop_va_dong_bo_data
+from chien_luoc.logic_vectorized.phan_tich_ky_thuat.dong_luong_dao_chieu import pt_rsi
+from chien_luoc.logic_vectorized.phan_tich_ky_thuat.bien_dong import pt_bollinger_squeeze
+from chien_luoc.logic_vectorized.phan_tich_ky_thuat.khoi_luong import pt_volume
+from chien_luoc.logic_vectorized.phan_tich_ky_thuat.xu_huong import pt_adx, pt_ema_trend
 
 
-def chien_luoc_scalping(df_1m, df_3m, df_5m, df_15m, df_30m, df_1h, df_4h, df_1d ):
+def chien_luoc_scalping(df_1m, df_3m, df_5m, df_15m, df_30m, df_1h, df_4h, df_1d):
+    df_1m_calc  = pt_volume(pt_bollinger_squeeze(pt_rsi(df_1m, '1m'),  '1m'),  '1m')
+    df_3m_calc  = pt_volume(pt_bollinger_squeeze(pt_rsi(df_3m, '3m'),  '3m'),  '3m')
+    df_5m_calc  = pt_volume(pt_bollinger_squeeze(pt_rsi(df_5m, '5m'),  '5m'),  '5m')
+    df_15m_calc = pt_adx(pt_ema_trend(df_15m, '15m'), '15m')
 
-    du_lieu_cac_khung = {
-            '1m': pt_rsi(df_1m, '1m'), '3m': pt_rsi(df_3m, '3m'), 
-            '5m': pt_rsi(df_5m, '5m'), '15m': pt_rsi(df_15m, '15m'),
-            '30m': pt_rsi(df_30m, '30m'), '1h': pt_rsi(df_1h, '1h'), 
-            '4h': pt_rsi(df_4h, '4h'), '1d': pt_rsi(df_1d, '1d')
-        }
-    
-    df = gop_va_dong_bo_data(du_lieu_cac_khung)
-    
-    # 1. Định nghĩa các ngưỡng tối ưu cho từng khung (đã phân tích từ vector)
-    nguong = {
-        'rsi_1d':  {'buy': 35, 'sell': 45},
-        'rsi_4h':  {'buy': 45, 'sell': 50},
-        'rsi_1h':  {'buy': 48, 'sell': 52},
-        'rsi_30m': {'buy': 50, 'sell': 50},
-        'rsi_15m': {'buy': 50, 'sell': 50},
-        'rsi_5m':  {'buy': 55, 'sell': 45},
-        'rsi_3m':  {'buy': 55, 'sell': 45},
-        'rsi_1m':  {'buy': 60, 'sell': 40}
+    du_lieu = {
+        '1m':  df_1m_calc,
+        '3m':  df_3m_calc,
+        '5m':  df_5m_calc,
+        '15m': df_15m_calc,
     }
+    df = gop_va_dong_bo_data(du_lieu)
 
-    # 2. Khởi tạo các cột tính điểm đồng thuận
-    df['buy_score'] = 0
+    df['buy_score']  = 0
     df['sell_score'] = 0
 
-    # Danh sách các cột RSI có trong dữ liệu của bạn
-    rsi_columns = ['rsi_1m', 'rsi_3m', 'rsi_5m', 'rsi_15m', 'rsi_30m', 'rsi_1h', 'rsi_4h', 'rsi_1d']
+    for tf, weight in [('1m', 4), ('3m', 3), ('5m', 2)]:
+        col_rsi = f'rsi_{tf}'
+        col_vol = f'vol_tang_{tf}'
+        col_low = f'bb_lower_{tf}'
+        col_up  = f'bb_upper_{tf}'
 
-    # 3. Tính điểm (Score) dựa trên sự đồng thuận của các khung
-    for col in rsi_columns:
-        if col in df.columns:
-            df['buy_score'] += (df[col] > nguong[col]['buy']).astype(int)
-            
-            df['sell_score'] += (df[col] < nguong[col]['sell']).astype(int)
+        if col_rsi not in df.columns:
+            continue
 
-    df['signal'] = 0 
-    
-    # ĐIỀU KIỆN MUA (LONG):
-    # - Ít nhất 6 trên 8 khung đồng thuận Tăng (buy_score >= 6)
-    # - Quan trọng: Khung 1 giờ (rsi_1h) phải giữ được trên mức 48 để tránh sập hầm
-    if 'rsi_1h' in df.columns:
-        dk_mua = (df['buy_score'] >= 6) & (df['rsi_1h'] > 48)
-        dk_ban = (df['sell_score'] >= 6) & (df['rsi_1h'] < 52)
-    else:
-        # Dự phòng nếu thiếu cột rsi_1h
-        dk_mua = (df['buy_score'] >= 6)
-        dk_ban = (df['sell_score'] >= 6)
+        vol_ok   = df[col_vol] if col_vol in df.columns else True
+        near_low = (df['close'] <= df[col_low] * 1.002) if col_low in df.columns else False
+        near_up  = (df['close'] >= df[col_up]  * 0.998) if col_up  in df.columns else False
 
-    df.loc[dk_mua, 'signal'] = 1
-    df.loc[dk_ban, 'signal'] = -1
+        dk_long  = (df[col_rsi] < 35) & near_low & vol_ok
+        dk_short = (df[col_rsi] > 65) & near_up  & vol_ok
 
-    # 5. Xác định điểm kích hoạt lệnh (Entry Trigger)
-    # entry_signal = 1 hoặc -1 tại chính xác thời điểm tín hiệu mới bắt đầu xuất hiện
-    # Thêm fillna(0) để bảo vệ dòng đầu tiên không bị lỗi NaN
+        df['buy_score']  += dk_long.astype(int)  * weight
+        df['sell_score'] += dk_short.astype(int) * weight
+
+    # Lọc: không scalp ngược trend mạnh trên 15M
+    if 'adx_15m' in df.columns and 'is_trend_15m' in df.columns:
+        trend_strong = df['adx_15m'] > 35
+        df.loc[trend_strong & (df['is_trend_15m'] == 'UP'),   'buy_score']  = 0
+        df.loc[trend_strong & (df['is_trend_15m'] == 'DOWN'), 'sell_score'] = 0
+
+    NGUONG = 6
+    df['signal'] = np.where(df['buy_score']  >= NGUONG,  1,
+                   np.where(df['sell_score'] >= NGUONG, -1, 0))
+
     df['entry_signal'] = df['signal'].diff().fillna(0)
-    
     return df

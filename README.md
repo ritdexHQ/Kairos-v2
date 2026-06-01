@@ -1,6 +1,6 @@
 <div align="center">
  
-<img width="224" height="224" alt="image" src="https://github.com/user-attachments/assets/5a1b5bcf-e6bb-4d92-a4a7-0c55697ba30e" />
+<img width="124" height="124" alt="image" src="https://github.com/user-attachments/assets/bf450abd-f468-43fa-9750-464e3ef95651" />
 
 # KAIROS QUANT SYSTEM
 ### **End-to-End Data Analytics System for Strategy Optimization in Financial Markets**

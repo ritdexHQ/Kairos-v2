@@ -3,416 +3,484 @@
 <img width="124" height="124" alt="image" src="https://github.com/user-attachments/assets/bf450abd-f468-43fa-9750-464e3ef95651" />
 
 # KAIROS QUANT SYSTEM
-### **End-to-End Data Analytics System for Strategy Optimization in Financial Markets**
+### **End-to-End Data Analytics Pipeline for Financial Market Research**
 
 [![Python](https://img.shields.io/badge/Python-3.12+-blue?style=for-the-badge&logo=python)](https://www.python.org/)
-[![Market](https://img.shields.io/badge/Market-Crypto-orange?style=for-the-badge)](https://www.binance.com/)
+[![Market](https://img.shields.io/badge/Domain-FinTech%20%2F%20Crypto-orange?style=for-the-badge)](https://www.binance.com/)
 [![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
-`Python` • `Pandas` • `Polars` • `Scikit-Learn` • `ETL Pipeline` • `Backtesting` • `Quant Analysis`
+`Python` • `Pandas` • `Polars` • `Scikit-Learn` • `PyTorch` • `ETL Pipeline` • `Time-Series` • `Feature Engineering`
 
 <div align="left">
  
 -----
 
-### 🚀 Điểm nổi bật của dự án (Project Highlights)
+### Điểm nổi bật về kỹ năng Phân tích Dữ liệu (Data Skills Highlights)
 
-  * **Xây dựng hệ thống phân tích dữ liệu:** Giao dịch từ nhiều nguồn (**Binance, OKX, Bybit**) nhằm hỗ trợ ra quyết định dựa trên dữ liệu.
-  * **Thiết kế pipeline ETL tự động:** Thu thập, xử lý và chuẩn hóa dữ liệu đa khung thời gian (**1m–1d**).
-  * **Phân tích dữ liệu lịch sử quy mô lớn:** Xử lý hàng triệu dòng dữ liệu để xác định các pattern thị trường (**trend, breakout, mean-reversion**).
-  * **Phát triển hệ thống backtesting:** Đánh giá hiệu suất và so sánh các chiến lược giao dịch một cách khách quan.
-  * **Ứng dụng Machine Learning:** Phân loại trạng thái thị trường và hỗ trợ cải thiện chất lượng tín hiệu.
-  * **Trực quan hóa dữ liệu:** Hiển thị hiệu suất thông qua dashboard phục vụ phân tích và ra quyết định chuyên sâu.
+* **Thiết kế ETL Pipeline tự động:** Thu thập, làm sạch và chuẩn hóa dữ liệu đa nguồn (**Binance, OKX, Bybit**) theo thời gian thực lẫn lịch sử — quy trình hoàn toàn tự động từ Raw API → Clean Dataset.
+* **Feature Engineering trên Time-Series quy mô lớn:** Trích xuất 50+ đặc trưng (RSI, ATR, EMA, Bollinger Bands, Volume Profile, Fractal, CVD...) trên 8 khung thời gian đồng thời (**1m–1d**) với kỹ thuật tránh look-ahead bias nghiêm ngặt.
+* **Xử lý dữ liệu hiệu suất cao:** Ứng dụng **vectorization** với Pandas/Polars để xử lý hàng triệu dòng dữ liệu, tăng tốc **100x+** so với vòng lặp tuần tự — thực tiễn trực tiếp cho bài toán dữ liệu quy mô lớn.
+* **Xây dựng ML Pipeline hoàn chỉnh:** Từ feature extraction, labeling, training (**PyTorch TradingMLP**) đến validation và deployment — phân loại trạng thái thị trường thành 6 nhóm với confidence scoring.
+* **Backtesting như Hypothesis Testing:** Thiết kế framework kiểm định giả thuyết thống kê trên dữ liệu lịch sử — đánh giá chất lượng mô hình, phát hiện overfitting và đo lường tính tổng quát hóa.
+* **Interactive Analytics Dashboard:** Xây dựng dashboard phân tích hiệu suất (PyQt6) với Equity Curve, Drawdown Chart, Heatmap theo giờ/ngày, Scatter PnL — biến raw trade log thành actionable insights.
 
 -----
 
-### 📊 Minh họa Backtesting
+### Minh họa Analytics Dashboard
 
 <img width="1920" height="1080" alt="576968808-4883c4f4-e1ca-4e34-b806-220ae38faccc" src="https://github.com/user-attachments/assets/b19055d4-6000-4410-9c7f-6db71cbcead1" />
 
 -----
 
-## 📊 Kết quả đạt được (Key Results)
+## Kết quả đạt được (Key Results)
 
-- Xử lý dữ liệu lịch sử quy mô lớn (hàng triệu dòng) trên nhiều năm  
-- Tăng tốc backtesting bằng phương pháp vector hóa, nhanh hơn đáng kể so với xử lý tuần tự (loop)  
-- Hỗ trợ phân tích đa khung thời gian (từ 1 phút đến 1 ngày)  
-- Tự động hóa toàn bộ quy trình từ thu thập, xử lý đến phân tích dữ liệu  
+- Xây dựng pipeline xử lý dữ liệu lịch sử **hàng triệu dòng** trên nhiều năm, nhiều cặp tài sản song song
+- Tăng tốc phân tích bằng vectorization: từ vài giờ xuống còn vài phút cho cùng khối lượng dữ liệu
+- Feature engineering đa khung thời gian không look-ahead bias — điều kiện bắt buộc cho mô phỏng dữ liệu thực
+- Tự động hóa toàn bộ vòng đời dữ liệu: **Thu thập → Xử lý → Phân tích → Trực quan hóa**
 
-## 📖 Mục lục tổng quan (Table of Contents)
+## Mục lục (Table of Contents)
 
-1. [Tầm nhìn & Triết lý hệ thống (Vision & Philosophy)](#1)
-2. [Giới thiệu chung (Overview)](#2)
-3. [Tính năng cốt lõi & Công nghệ đột phá](#3)
-4. [Kiến trúc hệ thống (System Architecture)](#4)
-5. [Logic Chiến lược giao dịch (Core Engine & Voting System)](#5)
-6. [Hệ thống Trí tuệ Nhân tạo & Machine Learning (AI/ML)](#6)
-7. [Hệ thống Backtest & Trực quan hóa (PyQt6 Dashboard)](#7)
-8. [Quản trị rủi ro & Quản lý vốn (Risk Management)](#8)
-9. [Cấu trúc thư mục (Directory Tree)](#9)
-10. [Yêu cầu & Hướng dẫn cài đặt (Setup Instructions)](#10)
-11. [Hướng dẫn sử dụng & Cấu hình (Configuration & Usage)](#11)
-12. [Lộ trình phát triển tương lai (Roadmap)](#12)
-13. [Cảnh báo rủi ro (Disclaimer)](#13)
+1. [Tầm nhìn & Phương pháp luận](#1)
+2. [Tổng quan hệ thống](#2)
+3. [Kỹ năng & Công nghệ cốt lõi](#3)
+4. [Kiến trúc Pipeline Dữ liệu](#4)
+5. [Feature Engineering & Hệ thống Chấm điểm Tín hiệu](#5)
+6. [ML Pipeline: Phân loại Trạng thái Thị trường](#6)
+7. [Analytics Dashboard & Trực quan hóa](#7)
+8. [Quản trị Rủi ro & Kiểm soát Chất lượng Mô hình](#8)
+9. [Cấu trúc thư mục](#9)
+10. [Yêu cầu & Hướng dẫn cài đặt](#10)
+11. [Hướng dẫn cấu hình](#11)
+12. [Lộ trình phát triển](#12)
+13. [Cảnh báo rủi ro](#13)
 
 -----
 
 <a name="1"></a>
 
-## 1. TẦM NHÌN & TRIẾT LÝ HỆ THỐNG (VISION & PHILOSOPHY)
+## 1. TẦM NHÌN & PHƯƠNG PHÁP LUẬN
 
-**KAIROS QUANT SYSTEM** không chỉ là một trading bot — mà hướng đến một **Hệ sinh thái giao dịch định lượng (Quantitative Trading Ecosystem)** được thiết kế để vận hành theo nguyên tắc **data-driven, xác suất và tự động hóa hoàn toàn**.
+**KAIROS QUANT SYSTEM** là một **Hệ thống Phân tích Dữ liệu end-to-end** ứng dụng vào bài toán nghiên cứu thị trường tài chính — nơi mọi quyết định đều phải được kiểm chứng bằng dữ liệu, không dựa vào trực giác hay cảm tính.
 
-Tầm nhìn của hệ thống là xây dựng một **a systematic, data-driven decision engine designed to minimize emotional bias**, nơi mọi hành động đều được dẫn dắt bởi dữ liệu, mô hình thống kê và logic định lượng.
+Triết lý xây dựng hệ thống:  
+**"Dữ liệu là sự thật duy nhất. Mọi giả thuyết đều phải qua kiểm định thống kê."**
 
-**Triết lý cốt lõi:**
-**“Tư duy chiến lược của con người – tốc độ và kỷ luật tuyệt đối của máy móc.”**
+### Bài toán cốt lõi
 
-### Kiến trúc vận hành
+Thị trường tài chính sinh ra hàng triệu điểm dữ liệu mỗi ngày (OHLCV, order book, funding rate, liquidation...). Thách thức không phải là thiếu dữ liệu — mà là:
 
-* **System Architect – Bộ não chiến lược:** thiết kế kiến trúc tổng thể của hệ thống: từ logic giao dịch, pipeline dữ liệu (ETL), mô hình quản trị rủi ro, đến cơ chế chấm điểm và tối ưu hóa chiến lược. Mọi quyết định đều được chuẩn hóa thành thuật toán có thể kiểm chứng bằng dữ liệu lịch sử.
-* **AI & Automation – Bộ máy thực thi:** AI và Automation được sử dụng để tăng tốc quá trình phát triển, tối ưu hóa mã nguồn và áp dụng Machine Learning vào việc phân loại tín hiệu thị trường, nhận diện mẫu hành vi giá và cải thiện hiệu suất chiến lược theo thời gian thực.
+1. **Thu thập & chuẩn hóa:** Dữ liệu đến từ nhiều nguồn, nhiều tần suất, nhiều múi giờ → cần pipeline ETL nhất quán.
+2. **Feature Engineering:** Từ raw price data → trích xuất tín hiệu có giá trị dự báo (predictive power) mà không bị nhiễu bởi look-ahead bias.
+3. **Kiểm định mô hình:** Một chiến lược "hoạt động tốt trên giấy" có thể thất bại trong thực tế nếu thiết kế backtest không nghiêm ngặt — cần framework kiểm định đúng chuẩn.
+4. **Ra quyết định tự động dựa trên mô hình:** Kết hợp statistical rules + ML predictions thành một hệ thống điều phối có thể giải thích được (explainable).
 
-### Mục tiêu hệ thống
+### Phương pháp tiếp cận
 
-* Loại bỏ hoàn toàn yếu tố cảm xúc của con người (FOMO, Panic Sell).
-* Chuẩn hóa quyết định giao dịch dựa trên xác suất thống kê.
-* Tự động hóa quy trình phân tích → ra quyết định → thực thi.
-* Tối ưu hóa hiệu suất thông qua backtest và học từ dữ liệu lịch sử.
-* Xây dựng hệ thống có khả năng mở rộng thành nền tảng Quant hoàn chỉnh.
-
-**KAIROS QUANT SYSTEM được tạo ra để biến giao dịch từ “nghệ thuật cảm tính” thành “khoa học định lượng”** — nơi kỷ luật, dữ liệu và thuật toán thay thế hoàn toàn trực giác.
+| Giai đoạn | Phương pháp |
+|---|---|
+| Thu thập dữ liệu | REST API + WebSocket streaming, đa sàn giao dịch |
+| Tiền xử lý | Resampling đa khung, fill NA, timestamp alignment |
+| Feature Engineering | 50+ indicators trên 8 timeframes, MTF vectorization |
+| Kiểm định | Walk-forward backtest, look-ahead bias prevention |
+| Mô hình hóa | Classification (6 market regimes), ResBlock MLP |
+| Trực quan hóa | Interactive dashboard: equity curve, heatmap, PnL scatter |
 
 -----
 
 <a name="2"></a>
 
-## 2. GIỚI THIỆU CHUNG (OVERVIEW)
+## 2. TỔNG QUAN HỆ THỐNG
 
-**KAIROS** là một **End-to-End Algorithmic Trading System** được thiết kế chuyên sâu cho thị trường tiền điện tử, bao phủ toàn bộ vòng đời của một giao dịch — từ thu thập dữ liệu, xử lý, ra quyết định đến backtest và trực quan hóa.
+**KAIROS** là một **Data Analytics Pipeline hoàn chỉnh** cho nghiên cứu định lượng thị trường tài chính, bao phủ toàn bộ vòng đời dữ liệu — từ thu thập, xử lý, phân tích, mô hình hóa đến trực quan hóa kết quả.
 
-Hệ thống được xây dựng theo kiến trúc **pipeline định lượng hoàn chỉnh**, đảm bảo tốc độ xử lý cao, khả năng mở rộng và tính nhất quán trong ra quyết định.
+Hệ thống được thiết kế theo **kiến trúc pipeline modular**, đảm bảo khả năng tái sử dụng, mở rộng và kiểm tra từng thành phần độc lập.
 
-### Các thành phần chính của hệ thống
+### Các thành phần chính
 
-* **ETL Pipeline – Thu thập & chuẩn hóa dữ liệu:** Tự động thu thập dữ liệu đa khung thời gian (Multi-Timeframe) từ 1m đến 1d thông qua API của các sàn giao dịch lớn. Dữ liệu được chuẩn hóa và lưu trữ theo cấu trúc time-series để phục vụ phân tích định lượng và backtesting.
-* **High-Performance Processing – Xử lý hiệu năng cao:** Ứng dụng kỹ thuật **vectorization** kết hợp với các thư viện như **Pandas / Polars** để xử lý hàng triệu dòng dữ liệu thị trường trong thời gian ngắn. Pipeline được tối ưu để giảm latency và tăng tốc độ tính toán indicator, signal và feature engineering.
-* **Intelligent Decision Engine – Bộ máy ra quyết định thông minh:** Kết hợp các phương pháp phân tích kỹ thuật truyền thống với mô hình Machine Learning nhằm dự báo trạng thái thị trường. Hệ thống đồng thời tích hợp các tín hiệu vi mô như order book, cấu trúc thanh khoản và biến động ngắn hạn để nâng cao chất lượng quyết định giao dịch.
-* **Visual Backtesting Platform – Nền tảng kiểm thử trực quan:** Một ứng dụng Desktop phát triển bằng PyQt6, hoạt động như một nền tảng Quant chuyên nghiệp, cho phép người dùng tương tác trực tiếp với dữ liệu lịch sử, kiểm thử chiến lược, phân tích hiệu suất và tối ưu hóa tham số trong môi trường trực quan.
+* **ETL Pipeline:** Tự động kéo dữ liệu đa khung thời gian (1m → 1d) từ API các sàn lớn. Chuẩn hóa, resampling, xử lý gaps và lưu trữ dạng time-series sạch sẵn sàng cho downstream analysis.
+* **High-Performance Feature Computation:** Ứng dụng vectorization với Pandas/Polars để tính toán 50+ chỉ báo kỹ thuật (TA features) trên toàn bộ dataset cùng lúc thay vì duyệt từng dòng — xử lý **hàng triệu dòng trong vài phút**.
+* **Statistical Signal Engine:** Kết hợp đa tầng phân tích (cấu trúc giá, khối lượng, động lượng, biến động, tâm lý thị trường) thành hệ thống chấm điểm tín hiệu có trọng số, cho phép giải thích được kết quả (interpretable output).
+* **Analytics Dashboard:** Ứng dụng Desktop (PyQt6) để phân tích kết quả, so sánh mô hình, khám phá dữ liệu tương tác — không chỉ là biểu đồ giá mà là hệ thống **Performance Analytics** chuyên sâu.
 
-**KAIROS hướng tới việc chuẩn hóa toàn bộ quy trình giao dịch thành một hệ thống định lượng khép kín** — nơi dữ liệu, thuật toán và hiệu suất được kiểm soát chặt chẽ từ đầu vào đến đầu ra.
+### 4 chế độ vận hành của Pipeline
 
-### 🚀 4 Chế độ hoạt động chính (The 4-Mode Execution Framework):
-
-1. **Live Trading (Realtime):** Giao dịch tiền thật trực tiếp trên hệ thống máy chủ của sàn với độ trễ tối thiểu (Low-latency Execution).
-2. **Paper Trading (Demo):** Giao dịch giả lập với dữ liệu thị trường thật theo thời gian thực (Forward Testing), giúp đánh giá thuật toán an toàn tuyệt đối trước khi nạp tiền thật.
-3. **Bar-to-Bar Backtest (Event-driven):** Mô phỏng nghiêm ngặt dòng thời gian thực (Candle-by-Candle) nhằm loại bỏ hoàn toàn lỗi nhìn trước tương lai (Look-ahead bias). Hỗ trợ linh hoạt hai chế độ tùy theo quy mô phần cứng:
-   * **Đơn luồng (Single-threading):** Chạy kiểm thử chuyên sâu cho 1 cặp tiền cụ thể.
-   * **Đa luồng (Multi-threading):** Kiểm thử song song cùng lúc hàng chục cặp tiền để tối ưu hóa thời gian chờ.
-4. **Vectorized Backtest (Kiểm thử ma trận):** Ứng dụng kỹ thuật xử lý mảng trên Pandas/Polars. Cho phép quét qua khối lượng dữ liệu lịch sử khổng lồ (hàng triệu nến) chỉ trong vài phút, phục vụ chuyên biệt cho quá trình R&D và dò tìm siêu tham số (Hyperparameters) cực nhanh.
+1. **Data Streaming (Realtime):** Thu thập và xử lý dữ liệu thị trường theo thời gian thực — benchmark độ trễ pipeline và kiểm thử model trên live data.
+2. **Forward Testing (Demo):** Chạy toàn bộ pipeline trên dữ liệu thật theo thời gian thực nhưng không có rủi ro tài chính — đánh giá model performance trong điều kiện thực tế.
+3. **Bar-to-Bar Simulation (Event-driven Backtest):** Mô phỏng nghiêm ngặt từng nến theo thứ tự thời gian — loại bỏ look-ahead bias hoàn toàn, hỗ trợ cả đơn luồng và đa luồng song song.
+4. **Vectorized Analysis:** Ứng dụng matrix operations trên toàn bộ dataset lịch sử — **nhanh hơn 100x** so với event-driven, phục vụ R&D và hyperparameter search.
 
 -----
 
 <a name="3"></a>
 
-## 3. TÍNH NĂNG CỐT LÕI & CÔNG NGHỆ ĐỘT PHÁ
+## 3. KỸ NĂNG & CÔNG NGHỆ CỐT LÕI
 
-### 🚀 Core Trading & Execution
+### Data Engineering & Pipeline
 
-* **Multi-Exchange Integration:** Tích hợp liền mạch với Binance, OKX, Bybit thông qua chuẩn `ccxt`, giúp dễ dàng mở rộng sang các sàn khác mà không cần viết lại logic.
-* **Dynamic Position Sizing:** Tự động tính toán khối lượng lệnh (Lot size) dựa trên % rủi ro cho phép trên tổng vốn (Risk per trade) và đòn bẩy linh hoạt.
+| Kỹ năng | Ứng dụng trong dự án |
+|---|---|
+| **ETL Design** | Thu thập → validate → transform → store dữ liệu OHLCV từ 3 sàn |
+| **Time-Series Processing** | Resampling đa khung, timestamp alignment, fill NA strategy |
+| **Data Quality** | Phát hiện gaps, outliers, corrupt candles; look-ahead bias prevention |
+| **Performance Optimization** | Vectorization với Polars/Pandas: 100x+ so với loop-based approach |
+| **Streaming Data** | WebSocket pipeline: CVD, order book depth, funding rate, liquidation |
 
-### ⚡ Xử lý dữ liệu High-Performance (Dual-Engine)
+### Feature Engineering
 
-* **Quy trình Kiểm định kép (Dual-Backtesting):** Ứng dụng Vectorized Backtest để tìm kiếm ý tưởng giao dịch nhanh chóng, sau đó dùng Bar-to-Bar Backtest để thẩm định lại độ chính xác, kiểm soát trượt giá (Slippage) và độ trễ.
-* **Tối ưu hóa với Pandas/Polars (Vectorization):** Thay vì dùng vòng lặp `for` chậm chạp để duyệt qua từng cây nến, KAIROS tính toán các bộ chỉ báo phức tạp (TA Indicators như RSI, MACD, ATR, Bollinger Bands...) bằng các phép toán ma trận (Matrix operations) trên toàn bộ mảng dữ liệu. Điều này giúp tăng tốc độ xử lý và Backtest lên **gấp hàng trăm lần** so với truyền thống.
+| Nhóm Feature | Chỉ báo |
+|---|---|
+| **Trend** | EMA (9/21/50/200), ADX, Ichimoku Cloud, Supertrend |
+| **Momentum** | RSI, MACD, Stochastic, Rate of Change |
+| **Volatility** | ATR, Bollinger Bands, Keltner Channel, True Range |
+| **Volume** | OBV, Volume Delta (CVD), VWAP, Volume Profile |
+| **Price Structure** | Fractal, FVG (Fair Value Gap), ZigZag, Support/Resistance |
+| **Sentiment** | Funding Rate, Open Interest, Long/Short Ratio, Fear & Greed |
+| **Session** | Asian/London/NY session classification, session range H/L |
 
-### 📡 Hệ thống Monitor & Thông báo
+### Machine Learning
 
-* **Logging System đa cấp độ:** Ghi nhận mọi hoạt động (Info, Warning, Error, Trade Execution) vào file `.log` để dễ dàng traceback lỗi hệ thống.
-* **Telegram/Email Webhooks:** Bắn thông báo ngay lập tức về điện thoại khi có lệnh Mở/Đóng, Cắt lỗ/Chốt lời hoặc khi hệ thống phát hiện rủi ro bất thường.
+* **Classification Task:** Phân loại thị trường thành 6 trạng thái → routing model phù hợp
+* **Architecture:** PyTorch MLP với ResBlock + BatchNorm + Dropout (chống overfitting)
+* **Feature Pipeline:** Polars-based extraction → normalization → model input
+* **Evaluation:** Walk-forward validation, confusion matrix, confidence scoring
+
+### Visualization & Analytics
+
+* **Dashboard:** PyQt6 interactive — equity curve, drawdown, trade scatter, session heatmap
+* **Charting:** Candlestick + multi-indicator overlay, entry/exit markers
+* **Reporting:** Daily PnL, win rate by hour/day, hold duration distribution
 
 -----
 
 <a name="4"></a>
 
-## 4. KIẾN TRÚC HỆ THỐNG (SYSTEM ARCHITECTURE)
+## 4. KIẾN TRÚC PIPELINE DỮ LIỆU
 
-Hệ thống được thiết kế theo chuẩn Modular Architecture, phân tách rõ ràng trách nhiệm của từng khối (Separation of Concerns).
+Hệ thống được phân tách rõ ràng thành các tầng độc lập (Separation of Concerns), dễ test và mở rộng từng module.
 
 ```mermaid
 graph TD
-    A[Thu thập Dữ liệu - CCXT API] -->|Dữ liệu thô OHLCV & Sổ lệnh| B(Bộ Xử lý Dữ liệu ETL)
-    B -->|Dữ liệu Sạch Vector hóa| C{Bộ lọc Thị trường AI/ML}
-    C -->|Trạng thái: Đi ngang/Có xu hướng| D[Hệ thống Chấm điểm Đa chiến lược]
-    D -->|Tín hiệu + Điểm bỏ phiếu| E{Quản trị Rủi ro & Tính Toán Đi Vốn}
-    E -->|Tín hiệu Hợp lệ| F[Động cơ Thực thi Lệnh]
-    E -->|Tín hiệu Bị từ chối| B
-    F -->|Mở/Đóng Lệnh| G[Máy chủ Sàn Giao dịch]
-    F -->|Thông tin Giao dịch| H[Quản lý Vị thế - Cắt lỗ/Chốt lời]
-    H --> G
-    
-    I[Động cơ Backtest Vector hóa] -->|Dữ liệu Lịch sử| D
-    I -->|Nhật ký Giao dịch| J[Bảng điều khiển PyQt6 Chuyên nghiệp]
-````
+    A[API Layer - CCXT + WebSocket] -->|Raw OHLCV + Order Book| B(ETL Layer - Làm sạch & Chuẩn hóa)
+    B -->|Dữ liệu sạch đa khung| C{Feature Engineering Layer}
+    C -->|50+ Features MTF| D[ML Classification - Market Regime]
+    D -->|Regime Label| E[Signal Engine - Multi-Strategy Voting]
+    E -->|Weighted Score| F{Risk & Validation Layer}
+    F -->|Validated Signal| G[Execution / Forward Test]
+    F -->|Rejected| B
+    G -->|Trade Log| H[Analytics Dashboard - PyQt6]
 
-1.  **Lớp Dữ liệu (`/lay_du_lieu`):** Đóng vai trò là hệ thống ETL (Extract-Transform-Load), chịu trách nhiệm kết nối trực tiếp với API các sàn giao dịch để kéo dữ liệu nến (OHLCV) và thông tin tài khoản. Lớp này thực hiện gộp nến (Resampling) đa khung thời gian, xử lý các lỗ hổng dữ liệu (Fill NA), định dạng lại chuỗi thời gian (Time-series) và chuẩn bị dữ liệu đầu vào sạch cho các bộ lọc phía sau.
+    I[Historical Data Store] -->|Backtest Input| C
+    I --> J[Vectorized Backtest Engine]
+    J -->|Performance Metrics| H
+```
 
-2.  **Lớp Chiến lược (`/chien_luoc`):** Bộ não logic chứa các công thức toán học và hệ thống chỉ báo kỹ thuật (TA indicators) như EMA, RSI, Bollinger Bands để xác định cấu trúc giá. Lớp này kết hợp các mô hình chiến lược vĩ mô, chỉ số tham lam và sợ hãi (Fear & Greed Index) cùng phân tích tâm lý thị trường để đưa ra quyết định giao dịch chính xác thay vì chỉ dựa vào công thức kỹ thuật thuần túy.
+**Tầng 1 — Data Acquisition (`/lay_du_lieu`):**  
+ETL layer kết nối REST API + WebSocket để kéo dữ liệu OHLCV đa khung, snapshot order book theo thời gian thực, và macro data (Open Interest, Fear & Greed Index). Xử lý gaps, timestamp normalization, và multi-source deduplication.
 
-3.  **Lớp Trí tuệ Nhân tạo (`/ml` - AI/ML Core Engine):** Đóng vai trò là trung tâm tri giác của hệ thống, được thiết kế theo cấu trúc mở (Extensible Framework) để làm nền tảng sẵn sàng cấy ghép đa dạng các mô hình Machine Learning trong tương lai (như mô hình dự báo giá, phát hiện dòng tiền Whale, hay NLP phân tích tin tức).
-    Trọng tâm hiện tại là mô hình Deep Learning sử dụng kiến trúc mạng Neural đa tầng (**TradingMLP**) kết hợp các khối **ResBlock** tiên tiến nhằm phân tích độ nhiễu và phân loại thị trường vào các trạng thái (Noise, Trend, Breakout...).
-    *(Các công cụ xử lý dữ liệu như lọc nhiễu, cân bằng nhãn chỉ đóng vai trò là các tiện ích phụ trợ ẩn bên dưới để cung cấp dữ liệu sạch cho Core AI).*
+**Tầng 2 — Feature Engineering (`/chien_luoc/phan_tich_ky_thuat`):**  
+Lớp tính toán 50+ technical features trên 8 timeframe đồng thời. Hai engine song song:
+- `logic_bar_to_bar` — Polars-based, xử lý từng nến mới theo thời gian thực
+- `logic_vectorized` — Pandas/NumPy, xử lý toàn bộ dataset theo batch
 
-4.  **Lớp Thực thi (`/thuc_thi_lenh`):** Công cụ thực thi lệnh (Execution Engine) đảm bảo an toàn cho tài sản thông qua việc quản lý bảo mật API Keys, xử lý Nonce và tuân thủ giới hạn tần suất gọi lệnh (Rate-limits) của sàn. Lớp này chịu trách nhiệm tính toán Position Sizing, quản lý rủi ro danh mục và thực hiện các lệnh đóng/mở vị thế một cách tối ưu.
+**Tầng 3 — ML Core (`/ml`):**  
+Pipeline phân loại trạng thái thị trường: feature extraction (Polars) → normalization → TradingMLP inference → confidence-weighted regime label. Output được dùng để routing signal đến strategy phù hợp.
 
-5.  **Lớp Giám sát & Giao diện Trực quan (`/hien_thi` - Telemetry & Command Center):** Đóng vai trò là "Trung tâm chỉ huy" của toàn bộ hệ sinh thái, biến hàng triệu điểm dữ liệu khô khan và luồng log phức tạp thành các báo cáo trực quan theo thời gian thực (Real-time). Lớp này không chỉ đơn thuần để "nhìn ngắm" biểu đồ, mà là một hệ thống phân tích hiệu suất (Performance Analytics) chuyên sâu phục vụ cho việc ra quyết định của Kiến trúc sư.
+**Tầng 4 — Signal Engine (`/chien_luoc`):**  
+Hệ thống chấm điểm đa chiến lược (Ensemble Voting): mỗi strategy module độc lập trả về score, AI regime routing chọn strategy phù hợp → tổng hợp thành tín hiệu cuối cùng có thể giải thích.
 
-      * **CLI Dashboard (Real-time Telemetry):** Cung cấp bảng điều khiển siêu tốc ngay trên Terminal thông qua thư viện `Rich`. Điểm nhấn cốt lõi là màn hình giám sát **Live Feed** – nơi trực quan hóa cuộc "đối đầu" giữa **Dự đoán của AI** (Neural Network) và **Nhận định của Chuyên gia** (Technical Teacher). Hệ thống hiển thị rõ ràng độ tin cậy (Confidence Score), tỷ lệ Win/Loss và trạng thái thị trường theo từng nhịp đập (Tick-by-tick) mà không gây ngốn tài nguyên máy tính.
-      * **Phân tích Đồ họa Chuyên sâu (Visual Analytics):** Tích hợp các giao diện đồ họa bậc cao (PyQt6 / Streamlit) để mổ xẻ kết quả sau những đợt Vectorized Backtest cường độ cao và backtest bar-to-bar đơn thuần. Thuật toán sẽ trực quan hóa đường cong vốn (Equity Curve), biểu đồ sụt giảm tài sản (Underwater/Drawdown Chart), phân bố lợi nhuận và thống kê chi tiết lịch sử lệnh (Trade breakdown).
-      * **Kiểm soát Đa môi trường (Multi-environment Monitoring):** Cung cấp góc nhìn toàn cảnh về "sức khỏe danh mục" (Portfolio Health) một cách minh bạch và liên tục xuyên suốt 3 môi trường vận hành: Kiểm thử quá khứ (Backtest), Giao dịch giả lập (Paper Trading / Demo) và Thực chiến trên sàn (Live Trading).
+**Tầng 5 — Analytics Layer (`/hien_thi`):**  
+Dashboard trực quan hóa toàn bộ output: performance metrics, trade analysis, signal quality evaluation. Biến raw trade log thành actionable insights.
 
 -----
 
 <a name="5"></a>
 
-## 5\. LOGIC CHIẾN LƯỢC GIAO DỊCH (CORE ENGINE & VOTING SYSTEM)
+## 5. FEATURE ENGINEERING & HỆ THỐNG CHẤM ĐIỂM TÍN HIỆU
 
-**KAIROS QUANT SYSTEM** từ chối việc đi tìm một "chén thánh" (Holy Grail) trong giao dịch hay phụ thuộc vào bất kỳ một chỉ báo đơn lẻ nào. Điểm tạo nên sự khác biệt của hệ thống là **Cơ chế Bỏ phiếu Chiến lược Tổ hợp (Ensemble Strategy Voting System)**.
+### Thiết kế Feature Engineering không Look-ahead Bias
 
-Hệ thống được thiết kế theo kiến trúc mở (Plug-and-Play), cho phép đánh giá thị trường qua nhiều góc nhìn độc lập và có thể dễ dàng mở rộng thêm các module mới trong tương lai:
+Đây là thách thức kỹ thuật cốt lõi của toàn bộ dự án. Mọi feature được tính theo kỹ thuật **"anchor + shift"**:
 
-**Các Module Đánh Giá Cốt Lõi (Có thể mở rộng thêm):**
+```
+1. Resample 1m → HTF candles (e.g. 1h)
+2. Tính indicator trên closed HTF candles
+3. Shift index forward 1 bar  ← Ngăn look-ahead bias
+4. Forward-fill về khung 1m
+5. Build live candle (high=cummax, low=cummin, vol=cumsum)
+6. Cập nhật indicator trên live candle bằng Wilder's smoothing
+```
 
-1.  **Trend Following (Thuận xu hướng):** Đo lường sức mạnh xu hướng vĩ mô (H1, H4) thông qua Cấu trúc giá (Market Structure), giao cắt EMA và định hướng của mây Ichimoku.
-2.  **Volatility & Breakout (Biến động & Phá vỡ):** Phân tích sự co thắt của dải Bollinger (Squeeze) kết hợp với hồ sơ khối lượng (Volume Profile / Volume Spike) để săn tìm các nhịp bùng nổ thanh khoản.
-3.  **Mean Reversion (Đảo chiều trung bình):** Sử dụng VWAP và các chỉ báo Động lượng (RSI, Stochastic) kết hợp với tín hiệu Phân kỳ (Divergence) để bắt các điểm cạn kiệt lực mua/bán (Exhaustion points).
-4.  **Multi-Timeframe Alignment (Đồng pha đa khung):** Đóng vai trò màng lọc nhiễu. Tín hiệu ở khung vi mô (M1, M5) chỉ được cấp phép hoạt động nếu đồng thuận với sóng chủ ở khung vĩ mô (H1, H4).
-5.  **AI/ML Confidence (Xác suất Học máy):** Trọng tài thứ 5 đến từ mô hình Deep Learning (TradingMLP), trả về tỷ lệ phần trăm tự tự tin (Confidence Score) dựa trên việc đối chiếu hoàn cảnh hiện tại với dữ liệu lịch sử trong `trading_memory.csv`.
-6.  **Macro & Sentiment (Vĩ mô & Tâm lý - *Mở rộng*):** Tích hợp điểm số từ dữ liệu On-chain, Orderbook Imbalance (Mất cân bằng sổ lệnh) và chỉ số Tham lam/Sợ hãi (Fear & Greed Index).
+Phương pháp này đảm bảo tại mỗi thời điểm `t`, model chỉ nhìn thấy dữ liệu đã có trước `t` — điều kiện bắt buộc để kết quả backtest phản ánh thực tế.
 
-**Quy trình chấm điểm và Trọng số động (Dynamic Scoring Engine):**
-Mỗi module chiến lược độc lập sẽ trả về một điểm tín hiệu `Score` dao động từ `-100` (Bán cực mạnh) đến `+100` (Mua cực mạnh).
+### Ensemble Scoring — Hệ thống chấm điểm có trọng số
 
-Hệ thống không cộng dồn một cách máy móc, mà sử dụng công thức **Trọng số động (Dynamic Weighting)**:
+Thay vì dùng một rule đơn lẻ, KAIROS kết hợp nhiều góc nhìn phân tích độc lập:
 
-> `Total Score = (W1*Trend) + (W2*Breakout) + (W3*Reversion) + (W4*MultiTF) + (W5*AI) + ... + (Wn*New_Module)`
+**Các nhóm phân tích:**
 
-  * **Sự thích nghi của Trọng số (W):** Các biến `W` không cố định. Chúng được AI tự động điều chỉnh dựa trên *Trạng thái thị trường*. Ví dụ: Nếu AI nhận diện thị trường đang ở pha "Đi ngang" (Ranging), trọng số của `W3` (Mean Reversion) sẽ được khuếch đại, trong khi `W1` (Trend) bị hạ thấp để tránh tín hiệu nhiễu (Fakeout).
-  * **Quyết định Thực thi (Execution Logic):** \* Nếu `Total Score` vượt qua `Ngưỡng xác nhận (Threshold)`, hệ thống mới tiến hành mở lệnh Long hoặc Short.
-      * **Dynamic Sizing:** `Total Score` càng lớn (thể hiện sự đồng thuận tuyệt đối của tất cả các góc nhìn), khối lượng vốn bơm vào lệnh (Position Size) sẽ càng được tăng cường một cách linh hoạt để tối đa hóa lợi nhuận.
+| Module | Chức năng phân tích | Trọng số điển hình |
+|---|---|---|
+| `xu_huong.py` | EMA alignment, ADX strength, trend structure | Cao (khung 1h) |
+| `cau_truc_gia.py` | Breakout, Fractal, FVG, Support/Resistance | Cao (khung 4h) |
+| `khoi_luong.py` | Volume surge, OBV, VWAP deviation | Trung bình |
+| `dong_luong_dao_chieu.py` | RSI divergence, MACD, momentum exhaustion | Trung bình |
+| `bien_dong.py` | ATR regime, Bollinger squeeze, Keltner | Thấp–Trung bình |
+| `vi_the.py` | CVD, Funding Rate, Order Book Imbalance | Xác nhận |
+| `chu_ky.py` | Session classification, funding hour filter | Lọc |
+
+**Formula tổng hợp:**
+```
+Total Score = Σ (Feature_Score_i × Weight_i × Timeframe_Multiplier)
+Signal = BUY  nếu Total Score ≥ Threshold
+         SELL nếu Total Score ≤ -Threshold
+         HOLD otherwise
+```
+
+Trọng số thay đổi theo ML regime — khi thị trường được phân loại là "Ranging", trọng số của Mean Reversion feature tăng, Trend feature giảm → mô hình tự thích nghi với điều kiện thị trường.
 
 -----
 
 <a name="6"></a>
 
-## 6\. HỆ THỐNG TRÍ TUỆ NHÂN TẠO & MACHINE LEARNING (AI/ML)
+## 6. ML PIPELINE: PHÂN LOẠI TRẠNG THÁI THỊ TRƯỜNG
 
-Để phá vỡ giới hạn của các chiến lược tĩnh, KAIROS tích hợp một Module ML độc lập (`/ml/trang_thai_thi_truong_ml`). Không chỉ dừng lại ở một bộ lọc đơn giản, đây là một **Kiến trúc Trí tuệ nhân tạo mở rộng (Extensible AI Framework)**, đóng vai trò như một màng lọc rủi ro tối thượng và có thể cấy ghép thêm vô số mô hình dự báo trong tương lai:
+### Bài toán Classification
 
-  * **Động cơ Phân loại Trạng thái Đa chiều (Multi-dimensional Market State Classification):** Thay vì chỉ chia thị trường thành 2 thái cực (Trending/Ranging), KAIROS sử dụng mạng Deep Learning đa tầng (**TradingMLP** với **ResBlock** trên nền tảng `PyTorch`) để phân rã cấu trúc thị trường thành 6 trạng thái vi mô: *Noise (Nhiễu), Trend following, Mean reversion, Squeeze (Tích lũy nén), Breakout, và Scalping*.
-    *(Kiến trúc dạng Plug-and-play cho phép dễ dàng cắm thêm các mô hình như Random Forest, SVM hay LSTM để tăng độ tin cậy).*
+**Input:** 50+ time-series features trích xuất từ 8 khung thời gian  
+**Output:** 6 nhãn trạng thái thị trường (multi-class classification)
 
-  * **Hệ thống Điều hướng Chiến lược Động (Dynamic Strategy Routing):**
-    AI đóng vai trò là "Người điều phối giao thông". Khi mô hình dự báo thị trường đang rơi vào pha "Noise" (Nhiễu loạn hỗn mang) hoặc "Squeeze" (Tích lũy), hệ thống sẽ tự động vô hiệu hóa (kill-switch) các module Trend Following và Breakout để triệt tiêu hoàn toàn rủi ro tín hiệu giả (False Breakout). Đồng thời, nó đánh thức và cấp vốn cho chiến lược Mean Reversion hoặc Scalping để khai thác các biên độ dao động hẹp.
+| Nhãn | Mô tả |
+|---|---|
+| `Nén_Chặt` | Volatility thấp, Bollinger squeeze → chuẩn bị bùng nổ |
+| `Đầu_Xu_Hướng` | Breakout khỏi vùng tích lũy, volume tăng |
+| `Xu_Hướng_Mạnh` | ADX cao, EMA alignment, momentum mạnh |
+| `Cao_Trào` | Overbought/Oversold, RSI divergence, exhaustion |
+| `Hồi_Quy` | Pullback trong xu hướng lớn |
+| `Nhiễu_Động` | Low ADX, random price action, no clear structure |
 
-  * **Sẵn sàng Mở rộng (Future-Proof Extensibility):**
-    Lớp ML hiện tại chỉ là nền móng. Cấu trúc tách biệt này cho phép KAIROS dễ dàng mở rộng thêm các Module AI khác trong tương lai mà không làm vỡ logic cốt lõi, chẳng hạn như:
+### Pipeline ML hoàn chỉnh
 
-      * **NLP Sentiment Analysis:** Xử lý ngôn ngữ tự nhiên để đọc tin tức từ X (Twitter) hoặc báo cáo kinh tế vĩ mô.
-      * **On-chain Clustering:** Nhóm các cụm hành vi ví cá mập (Whale wallets).
-      * **Orderbook Computer Vision:** Dùng AI thị giác máy tính để phân tích bản đồ nhiệt (Heatmap) của sổ lệnh.
+```
+Raw OHLCV
+    ↓ Feature Extraction (Polars, tao_feature.py)
+50+ Features × 6 Timeframes
+    ↓ Labeling (trading_teacher.py)
+Labeled Dataset (trading_memory.csv)
+    ↓ Preprocessing: normalize, balance classes, train/val split
+    ↓ Training: TradingMLP (PyTorch)
+        ├── ResBlock × 3 (residual connections)
+        ├── BatchNorm + Dropout (regularization)
+        └── Softmax output → 6-class probability
+    ↓ Evaluation: confusion matrix, walk-forward validation
+    ↓ Deployment: model.pth + scaler_params.json
+    ↓ Inference: real-time prediction với confidence score
+```
+
+### Kiến trúc mô hình (TradingMLP)
+
+* **Input:** normalized feature vector (50+ dimensions)
+* **Hidden layers:** ResBlock stacks với skip connections — giảm vanishing gradient
+* **BatchNorm:** chuẩn hóa activation giữa các layer — ổn định training
+* **Dropout:** regularization chống overfitting trên dữ liệu time-series
+* **Output:** softmax(6) → regime probabilities → confidence-based routing
+
+### Tự động gán nhãn (Auto-labeling)
+
+`trading_teacher.py` tự động phân tích dữ liệu lịch sử và gán nhãn dựa trên bộ quy tắc kỹ thuật:
+- Tính toán multi-TF features (EMA alignment, ATR ratio, volume patterns)
+- Xác định cấu trúc giá trong cửa sổ `N` nến tiếp theo
+- Gán nhãn regime phù hợp → dataset cho supervised learning
 
 -----
 
 <a name="7"></a>
 
-## 7\. HỆ THỐNG BACKTEST & TRỰC QUAN HÓA (PYQT6 DASHBOARD)
+## 7. ANALYTICS DASHBOARD & TRỰC QUAN HÓA
 
-KAIROS sở hữu một phần mềm Desktop chuyên dụng được xây dựng bằng **PyQt6**, biến dữ liệu khô khan thành các Insight có giá trị.
+KAIROS tích hợp ứng dụng Desktop (PyQt6) biến kết quả phân tích thành visual insights.
 
-  * **Interactive UI (Giao diện tương tác):** Thiết kế dạng Dockable Widgets (kéo thả linh hoạt các cửa sổ) giúp người dùng tùy biến không gian làm việc.
-  * **Siêu tốc độ với Polars:** Lọc hàng triệu dòng kết quả giao dịch (theo Ngày, Giờ, Coin, Long/Short) chỉ trong tích tắc.
-  * **Daily PnL & Intraday Equity Curve:** Biểu đồ hiển thị lợi nhuận từng ngày. Click vào một ngày cụ thể để phân tích chi tiết từng lệnh được đánh trong ngày hôm đó.
-  * **Heatmap & Time Distribution:** Biểu đồ nhiệt phân tích hành vi giá. Trả lời câu hỏi: *"Hệ thống kiếm được nhiều tiền nhất vào thứ mấy trong tuần? Khung giờ nào có tỷ lệ Win cao nhất?"*
-  * **Trade Scatter Plot:** Biểu đồ phân tán (Scatter) đo lường mối tương quan giữa Thời gian giữ lệnh (Hold Duration) và Lợi nhuận (PnL). Giúp phát hiện lỗi "gồng lỗ quá lâu" hoặc "chốt lời quá sớm".
-    
+* **Equity Curve & Drawdown Chart:** Đường cong vốn tích lũy + underwater chart — phân tích risk-adjusted performance theo thời gian.
+* **Daily PnL Calendar:** Lợi nhuận theo từng ngày dạng calendar view. Click để drill-down từng lệnh cụ thể trong ngày.
+* **Session Heatmap:** Ma trận nhiệt Win Rate theo Giờ × Ngày trong tuần — trả lời "lúc nào model hoạt động tốt nhất?".
+* **Trade Scatter Plot:** Phân tán Hold Duration × PnL — phát hiện pattern "cắt lời sớm / gồng lỗ" từ data.
+* **Signal Quality Dashboard:** Candlestick chart + entry/exit markers + multi-indicator overlay — visualize từng quyết định của model trên price data.
+
 <img width="1920" height="1080" alt="576971888-e01c8ea9-eb98-4673-b681-41fdb774d801" src="https://github.com/user-attachments/assets/4600b73a-f2ad-4eee-abde-4ac0e67782f6" />
 
 -----
 
 <a name="8"></a>
 
-## 8\. QUẢN TRỊ RỦI RO & QUẢN LÝ VỐN (RISK MANAGEMENT)
+## 8. QUẢN TRỊ RỦI RO & KIỂM SOÁT CHẤT LƯỢNG MÔ HÌNH
 
-Được thiết kế với tư duy của dân Tài chính định lượng, rủi ro là yếu tố được đặt lên hàng đầu:
+Trong phân tích định lượng, kiểm soát rủi ro là yêu cầu bắt buộc — không chỉ về tài chính mà về chất lượng mô hình:
 
-  * **Bảo vệ tài khoản (Account Drawdown Limit):** Nếu hệ thống thua lỗ liên tục chạm ngưỡng Max Drawdown (VD: âm 15% tổng tài khoản), bot sẽ tự động ngắt kết nối (Kill-switch) để bảo toàn vốn.
-  * **Stoploss động theo Volatility (ATR-based SL):** Stoploss không đặt cố định theo % tĩnh, mà co giãn theo biến động thị trường (Average True Range). Thị trường giật mạnh, SL nới rộng; thị trường êm, SL thắt chặt.
-  * **Trailing Stop & Break-even:** Tự động dời Stoploss về điểm hòa vốn (Entry) khi giá đã chạy được một mức lợi nhuận nhất định. Tự động cuốn chiếu lợi nhuận (Trailing) để ăn trọn con sóng.
+* **Look-ahead Bias Prevention:** Mọi feature đều được tính trước thời điểm tín hiệu. Dữ liệu train/test được chia theo walk-forward (không random shuffle) để phản ánh điều kiện thực tế.
+* **Overfitting Detection:** Drawdown limit tự động dừng mô hình khi performance thực tế lệch xa backtest — dấu hiệu của overfitting.
+* **Dynamic SL/TP theo ATR:** Stop-loss không cố định theo % tĩnh mà co giãn theo biến động thực tế (ATR) — tránh bị noise quét stop trong thị trường biến động cao.
+* **Robustness Testing:** Kiểm thử mô hình trên nhiều cặp tài sản, nhiều giai đoạn thị trường khác nhau (bull/bear/ranging) để đánh giá khả năng tổng quát hóa.
 
 -----
 
 <a name="9"></a>
 
-## 9\. CẤU TRÚC THƯ MỤC (DIRECTORY TREE)
-
-Cấu trúc được quy hoạch chặt chẽ, dễ dàng bảo trì và mở rộng:
+## 9. CẤU TRÚC THƯ MỤC
 
 ```text
 KAIROS_QUANT_SYSTEM_v2.0/
-├── main.py                     # Entry point: Menu điều hướng chính của toàn hệ thống
-├── REALME.MD                   # Tổng quan hệ thống và hướng dẫn vận hành
-├── requirements.txt            # Danh sách thư viện phụ thuộc (PyTorch, Polars, CCXT, Rich...)
+├── main.py                         # Entry point – điều hướng các chế độ vận hành
 │
-├── config/                     # QUẢN LÝ CẤU HÌNH
-│   ├── cau_hinh_giao_ao.json   # Setup thông số cho môi trường Backtest/Demo
-│   ├── cau_hinh_giao_dich.yaml # Setup vốn, đòn bẩy, cặp coin, quản trị rủi ro
-│   ├── tai_khoan_api.json      # Nơi lưu trữ API Key, Secret Key (đã mã hóa)
-│   └── thong_tin_san.yaml      # Thông số kỹ thuật sàn (Min lot, Tick size, Leverage)
+├── config/                         # CẤU HÌNH HỆ THỐNG
+│   ├── cau_hinh_giao_dich.yaml     # Tham số phân tích: assets, khung thời gian, rủi ro
+│   ├── cau_hinh_giao_ao.json       # Cấu hình môi trường simulation/backtest
+│   ├── tai_khoan_api.json          # API credentials (mã hóa)
+│   └── thong_tin_san.yaml          # Exchange metadata (min lot, tick size)
 │
-├── ml/                             # KHỐI MACHINE LEARNING (AI Core)
-│   ├── main.py                     # Luồng điều phối ML: Huấn luyện, chạy Dashboard, Auto-Learning
-│   ├── tool/                       # Module công cụ hổ trợ
-│   │   ├── data_filter.py          # Xử lý nhiễu và cân bằng dữ liệu log (trading_memory.csv)
-│   │   └── trading_teacher.py      # Hệ thống chuyên gia: Tính toán kỹ thuật (RSI, VWAP, EMA) gán nhãn
-│   └── trang_thai_thi_truong_ml/   # Module phân loại trạng thái thị trường chuyên sâu
-│       ├── ml_model.py             # Kiến trúc mạng Neural (TradingMLP, ResBlock, BatchNorm)
-│       ├── ml_predict.py           # Logic dự đoán Realtime & Đánh giá hiệu quả (PnL/Reward)
-│       ├── tao_feature.py          # Trích xuất đặc trưng (Features) đa khung bằng Polars
-│       ├── ml_compare.py           # So sánh hiệu suất giữa các phiên bản Model AI
-│       ├── ml_deploy.py            # Triển khai và đóng gói mô hình sẵn sàng thực chiến
-│       └── du_lieu_ml/             # Kho lưu trữ dữ liệu và trọng số vật lý
-│           ├── model_pytorch.pth   # File trọng số mạng Neural đã huấn luyện thành công
-│           ├── model_info.json     # Cấu hình kiến trúc Input/Output của mô hình
-│           ├── scaler_params.json  # Tham số chuẩn hóa dữ liệu đầu vào (Mean/Std)
-│           └── trading_memory.csv  # Nhật ký kinh nghiệm dùng làm tập dữ liệu học máy
+├── lay_du_lieu/                    # ETL LAYER – Thu thập & Chuẩn hóa Dữ liệu
+│   ├── lay_ohlcv.py                # Kéo OHLCV lịch sử đa khung qua CCXT
+│   ├── lay_marketsnapshot.py       # WebSocket streaming: CVD, order book, liquidation
+│   └── lay_macro.py                # Macro data: Open Interest, Fear & Greed Index
 │
-├── lay_du_lieu/                    # KHỐI ETL & API (Data Acquisition)
-│   ├── lay_ohlcv.py                # Kéo nến lịch sử đa khung thời gian
-│   ├── lay_marketsnapshot.py       # Lấy dữ liệu Realtime (Orderbook, Ticker, Liquidation)
-│   └── lay_thong_tin_tai_khoan.py  # Lấy thông tin tài khoản
+├── chien_luoc/                     # FEATURE ENGINEERING & SIGNAL LAYER
+│   ├── logic_vectorized/           # Batch processing engine (Pandas/NumPy)
+│   │   ├── phan_tich_ky_thuat/     # 50+ feature computations (vectorized)
+│   │   │   ├── xu_huong.py         # Trend features: EMA, ADX, Ichimoku, Supertrend
+│   │   │   ├── cau_truc_gia.py     # Structure features: Breakout, Fractal, FVG, ZigZag
+│   │   │   ├── khoi_luong.py       # Volume features: OBV, VWAP, Volume Profile
+│   │   │   ├── dong_luong_dao_chieu.py  # Momentum: RSI, MACD, divergence
+│   │   │   ├── bien_dong.py        # Volatility: ATR, Bollinger, Keltner
+│   │   │   ├── vi_the.py           # Sentiment: CVD proxy, buyer pressure
+│   │   │   └── chu_ky.py           # Session: Asian/London/NY classification
+│   │   ├── chien_luoc/             # 5 strategy models (vectorized scoring)
+│   │   ├── quan_ly_chien_luoc.py   # Ensemble: merge all signals + ML routing
+│   │   └── test_chien_luoc.py      # Unit tests cho toàn bộ pipeline
+│   └── logic_bar_to_bar/           # Real-time processing engine (Polars)
+│       └── phan_tich_ky_thuat/     # Cùng features nhưng cho streaming data
 │
-├── chien_luoc/                 # KHỐI CORE LOGIC (Strategy)
-│   ├── logic_vectorized/       # Thuật toán ma trận dùng cho Backtest quy mô lớn
-│   └── logic_bar_to_bar/       # Thuật toán chạy Live (xử lý dữ liệu từng Tick/Nến)
+├── ml/                             # ML PIPELINE
+│   ├── main.py                     # Orchestrator: train / evaluate / deploy
+│   ├── tool/
+│   │   ├── trading_teacher.py      # Auto-labeling: gán nhãn regime từ price data
+│   │   └── data_filter.py          # Preprocessing: noise filter, class balancing
+│   └── trang_thai_thi_truong_ml/
+│       ├── tao_feature.py          # Feature extraction pipeline (Polars-based)
+│       ├── ml_model.py             # TradingMLP: ResBlock + BatchNorm + Dropout
+│       ├── ml_predict.py           # Inference + confidence scoring
+│       ├── ml_compare.py           # Model versioning & performance comparison
+│       └── du_lieu_ml/             # Model artifacts & training data
+│           ├── model_pytorch.pth   # Trained weights
+│           ├── scaler_params.json  # Feature normalization parameters
+│           └── trading_memory.csv  # Labeled training dataset
 │
-├── thuc_thi_lenh/              # KHỐI EXECUTION ENGINE
-│   ├── bo_may_thuc_thi.py      # Xử lý vòng đời lệnh (Khởi tạo -> Quản lý -> Kết thúc)
-│   ├── quan_ly_danh_muc.py     # Tính toán Position Sizing, Margin & Drawdown
-│   ├── ket_noi_san/            # Wrapper đa sàn (Binance, Bybit, OKX) qua CCXT
-│   └── [mo_lenh.py, dong_lenh.py, theo_doi_lenh.py...] # Các logic xử lý lệnh chi tiết
+├── hien_thi/                       # ANALYTICS DASHBOARD
+│   ├── dashboard_backtest.py       # Performance analytics: equity, drawdown, PnL
+│   ├── dashboard_vectorized.py     # Signal visualization: candlestick + indicators
+│   ├── dashboard_realtime.py       # Live monitoring dashboard
+│   └── dashboard_demo.py           # Forward-test performance tracking
 │
-├── chuc_nang/                  # CÁC CHẾ ĐỘ VẬN HÀNH (Operation Modes)
-│   ├── backtest_donluong.py    # Engine chạy Backtest kiểm thử chiến thuật
-│   ├── backtest_daluong.py     # Engine chạy Backtest kiểm thử chiến thuật song song nhiều luồng
-│   ├── vectorized_backtest.py  # Backtest siêu tốc bằng phương pháp Vector hóa
-│   ├── chay_demo.py            # Kích hoạt Paper Trading (Giao dịch ảo Realtime)
-│   └── chay_realtime.py        # Kích hoạt Live Trading (Giao dịch thật trên sàn)
+├── utils/                          # UTILITIES
+│   ├── ham_tien_ich.py             # MTF data merge (merge_asof, no lookahead)
+│   ├── thoi_gian.py                # Timestamp handling, timezone normalization
+│   ├── doc_cau_hinh.py             # YAML/JSON config parser
+│   └── log.py                      # Structured logging
 │
-├── hien_thi/                   # KHỐI GIAO DIỆN & MONITORING
-│   ├── dashboard_realtime.py   # Bảng điều khiển giám sát lệnh và thị trường Live
-│   ├── dashboard_backtest.py   # Trực quan hóa kết quả phân tích lịch sử
-│   ├── dashboard_vectorized.py # Trực quan hóa điểm vào lệnh và thoát lệnh của chiến lược trên biểu đồ nến    
-│   └── dashboard_demo.py       # Giám sát hiệu quả giao dịch thử nghiệm
-│
-├── du_lieu/                    # KHO LƯU TRỮ DỮ LIỆU HỆ THỐNG
-│   ├── lich_su_gia/            # CSV/Parquet chứa nến lịch sử kết quả backtest
-│   ├── du_lieu_vectorized/     # CSV/Parquet chứa nến lịch sử đã làm sạch
-│   ├── thong_tin_lenh/         # Trạng thái JSON các lệnh đang mở/lịch sử lệnh
-│   └── nhat_ky_hoat_dong.log   # Logs chi tiết lỗi và hoạt động hệ thống
-│
-├── thong_bao/                  # HỆ THỐNG ALERTS
-│   ├── gui_telegram.py         # Gửi tín hiệu, báo cáo PnL và cảnh báo qua Telegram
-│   └── gui_email.py            # Báo cáo tổng kết định kỳ qua Email
-│
-└── utils/                      # TIỆN ÍCH HỖ TRỢ (Helpers)
-    ├── thoi_gian.py            # Xử lý Timestamp, Timezone, đồng bộ giờ sàn
-    ├── doc_cau_hinh.py         # Parser chuyên dụng cho YAML/JSON
-    ├── ham_tien_ich.py         # Các hàm toán học, định dạng dữ liệu bổ trợ
-    ├── save_datafile.py        # Logic lưu trữ và quản lý format file console/log
-    └── chuyen_doi_don_vi.py    # Chuyển đổi khối lượng, đòn bẩy và đơn vị tiền tệ
+└── du_lieu/                        # DATA STORAGE
+    ├── lich_su_gia/                # Historical OHLCV (CSV/Parquet)
+    ├── du_lieu_vectorized/         # Cleaned datasets for vectorized analysis
+    └── thong_tin_lenh/             # Trade logs for performance analysis
 ```
 
 -----
 
 <a name="10"></a>
 
-## 10\. YÊU CẦU & HƯỚNG DẪN CÀI ĐẶT (SETUP INSTRUCTIONS)
+## 10. YÊU CẦU & HƯỚNG DẪN CÀI ĐẶT
 
-*(Phần này dành cho các thông tin cập nhật về môi trường hệ thống và thư viện cài đặt)*
+```bash
+# Clone và cài đặt dependencies
+git clone <repo>
+cd kairos-v2
+pip install -r requirements.txt
+```
+
+**Thư viện chính:**
+
+| Thư viện | Mục đích |
+|---|---|
+| `pandas`, `polars` | Data processing & feature engineering |
+| `numpy` | Vectorized computations |
+| `pytorch` | ML model training & inference |
+| `scikit-learn` | Preprocessing, metrics |
+| `ccxt` | Exchange API connector |
+| `pyqt6` | Analytics dashboard UI |
+| `websocket-client` | Streaming data pipeline |
 
 <a name="11"></a>
 
-## 11\. HƯỚNG DẪN SỬ DỤNG & CẤU HÌNH (CONFIGURATION & USAGE)
+## 11. HƯỚNG DẪN CẤU HÌNH
 
-### 11.1 Cấu hình hệ thống (YAML & JSON)
+### 11.1 Cấu hình phân tích (YAML)
 
-Bạn cần thiết lập file `config/cau_hinh_giao_dich.yaml` trước khi chạy:
+Thiết lập file `config/cau_hinh_giao_dich.yaml`:
 
 ```yaml
-san_giao_dich_chinh: "okx" # Hỗ trợ: binance, bybit, okx
+san_giao_dich_chinh: "binance"   # Nguồn dữ liệu chính
 cap_giao_dich:
   - "BTC/USDT"
   - "ETH/USDT"
   - "SOL/USDT"
 
+# Tham số quản trị rủi ro
 von_moi_lenh_usdt: 100
-don_bay: 7 # là số trung vị của khoảng đòn bẩy từ 5 đến 9
+don_bay: 7
 max_lenh_cho_phep: 20
-cat_lo_percent: 0.1   # Cắt lỗ 10%
-chot_loi_percent: 0.15  # Chốt lời 15%    # Bật Stoploss động theo ATR
+cat_lo_percent: 0.1
+chot_loi_percent: 0.15
 ```
 
-Tiếp theo, điền API Key vào `config/tai_khoan_api.json`. **Lưu ý: Chỉ cấp quyền Đọc (Read) và Giao dịch (Trade/Futures). Tuyệt đối KHÔNG cấp quyền Rút tiền (Withdraw).**
+### 11.2 Khởi chạy
 
-### 11.2 Khởi chạy KAIROS
-
-*(Tiến hành gọi lệnh khởi chạy từ file `main.py` ở thư mục gốc để vào màn hình điều hướng của hệ thống).*
+```bash
+python main.py   # Menu điều hướng → chọn chế độ: Backtest / Demo / Realtime / Vectorized
+```
 
 -----
 
 <a name="12"></a>
 
-## 12\. LỘ TRÌNH PHÁT TRIỂN TƯƠNG LAI (ROADMAP)
+## 12. LỘ TRÌNH PHÁT TRIỂN
 
-### Lộ trình nâng cấp Hệ thống (Roadmap v2.0 & v3.0)
-
-Với vai trò là người thiết kế hệ thống (Kiến trúc sư), định hướng phát triển KAIROS trong tương lai không chỉ dừng lại ở việc phân tích giá, mà sẽ vươn lên thành một cỗ máy tự tư duy toàn diện. Lộ trình nâng cấp bao gồm:
-
-  * **Tích hợp Nguồn dữ liệu Ngoại vi (Alternative Data):** Thay vì chỉ nhìn vào biểu đồ nến, KAIROS sẽ biết "lắng nghe" thị trường. Hệ thống sẽ quét mạng xã hội để đo lường tâm lý đám đông, phân tích Chỉ số Tham lam & Sợ hãi, và theo dõi dòng tiền thật của "cá mập" trên chuỗi khối (On-chain data). Những thông tin này sẽ được dùng làm điểm cộng/trừ trong cơ chế Bỏ phiếu chiến lược để chốt lệnh chính xác hơn.
-  * **Học tăng cường - Cho AI tự thực chiến (Reinforcement Learning):** Nâng cấp module "Thầy giáo" hiện tại thành một cỗ máy AI có khả năng tự động "cày" hàng triệu kịch bản thị trường (giống như cách AI học chơi cờ). Nó sẽ tự chơi, tự thua và tự rút kinh nghiệm để mò ra những **bộ thông số cài đặt hoàn hảo nhất** (Hyperparameters) – những con số tối ưu đến mức bộ não con người không thể tự nghĩ ra được.
-  * **Tự động Phân bổ và Bảo vệ Vốn (Portfolio Optimization):** Thay vì chia tiền bằng tay hay dồn hết vào một giỏ, thuật toán sẽ tự động phân bổ vốn thông minh. Nó sẽ chọn ra các đồng coin có hướng đi "trái ngược nhau" (độ tương quan thấp). Nhờ vậy, nếu một đồng coin bị sập, lợi nhuận từ đồng coin khác sẽ gánh lại. Điều này tạo ra một lá chắn an toàn (Hedging) tuyệt đối cho tổng tài khoản của bạn.
-  * **Mở rộng sang thị trường Phái sinh Quyền chọn (Options):** Không chỉ đánh Lên/Xuống (Long/Short) thông thường, hệ thống sẽ tiến hóa để kiếm tiền từ mọi ngóc ngách của thị trường. Bot sẽ ăn lợi nhuận từ **chênh lệch biên độ giật của giá** và thu tiền từ việc **thời gian của hợp đồng bị hao mòn từng ngày**. (Ngay cả khi giá đi ngang, tài khoản vẫn tự động sinh lời).
-  * **Tối ưu hóa Tốc độ "Thần tốc" (Hybrid Low-level Programming):** Để tăng tính cạnh tranh, KAIROS sẽ không chỉ dùng Python. Hệ thống sẽ kết hợp thêm các ngôn ngữ bậc thấp có tốc độ xử lý nhanh như **C++** hoặc **Rust**. Python sẽ đóng vai trò là "người chỉ huy" thông minh, trong khi C++/Rust là các "vận động viên" thực hiện những việc tính toán nặng nhọc nhất. Điều này giúp giảm độ trễ (Latency) khi đặt lệnh xuống mức tối thiểu và giúp việc chạy giả lập (Backtest) hàng triệu nến dữ liệu diễn ra nhanh hơn.
+* **Alternative Data Integration:** Tích hợp NLP sentiment từ social media, on-chain data, macro economic indicators làm features bổ sung cho ML pipeline.
+* **Reinforcement Learning:** Nâng cấp auto-labeling thành RL agent tự tối ưu strategy parameters thông qua simulation.
+* **Portfolio Optimization:** Phân bổ vốn đa tài sản dựa trên correlation matrix và mean-variance optimization.
+* **Options Analytics:** Mở rộng sang phân tích implied volatility, Greeks, và options flow.
+* **Performance:** Hybrid Python/Rust cho computation-heavy features, giảm latency pipeline.
 
 -----
 
 <a name="13"></a>
 
-## 13\. CẢNH BÁO RỦI RO (DISCLAIMER)
+## 13. CẢNH BÁO RỦI RO
 
-⚠️ **QUAN TRỌNG:**
+⚠️ **Lưu ý quan trọng:**
 
-1.  Thị trường Cryptocurrency rủi ro cực kỳ cao. KAIROS phân tích dựa trên Xác suất thống kê (Statistical Probability) dựa trên dữ liệu quá khứ, **KHÔNG có khả năng dự đoán tương lai chính xác 100%**. Lợi nhuận trong quá khứ không đảm bảo cho tương lai.
-2.  **System Bug:** Mặc dù đã được kiểm thử (Unit test/Integration test), phần mềm vẫn có thể tồn tại lỗi không lường trước (Bug), hoặc rủi ro về độ trễ mạng lưới, lỗi từ API của Sàn giao dịch.
-3.  Người dùng hoàn toàn chịu trách nhiệm cho các quyết định cấu hình vốn, đòn bẩy và API Keys của mình. Tác giả không chịu trách nhiệm cho bất kỳ tổn thất tài chính nào phát sinh trong quá trình sử dụng hệ thống.
-
------
-
-📌 **LƯU Ý QUAN TRỌNG VỀ MÃ NGUỒN (SOURCE CODE NOTICE):**
-Mã nguồn được chia sẻ tại kho lưu trữ này chỉ là phiên bản nền tảng sơ khai nhất (v1.0). Nhằm bảo vệ quyền sở hữu trí tuệ và lợi thế giao dịch (Alpha), rất nhiều công năng lõi, thuật toán nâng cao và cơ chế thực chiến đã được cắt giảm. Các phiên bản nâng cấp mới nhất và hoàn thiện nhất của hệ thống KAIROS sẽ **không được công khai (Closed-source)**. Phiên bản mã nguồn mở này chủ yếu đóng vai trò là một Proof-of-Concept (Bản minh họa) về kiến trúc và tư duy xây dựng hệ thống Quant Trading.
+1. Kết quả backtest dựa trên dữ liệu lịch sử **không đảm bảo hiệu suất tương lai**. Mô hình thống kê chỉ đo lường xác suất — không dự báo chính xác tuyệt đối.
+2. Hệ thống phục vụ mục đích **nghiên cứu và phân tích định lượng**. Người dùng chịu hoàn toàn trách nhiệm cho các quyết định dựa trên output của hệ thống.
+3. Thị trường Cryptocurrency có biến động cực cao — rủi ro mất vốn là thực.
 
 -----
 
-### 👨‍💻 THÔNG TIN TÁC GIẢ (AUTHOR & ARCHITECT)
+📌 **Về mã nguồn:**  
+Repository này là bản nền tảng (v1.0) mang tính Proof-of-Concept về kiến trúc pipeline và phương pháp luận phân tích. Các module nâng cao và phiên bản production được giữ Closed-source.
 
-  * **System Architect & Logic Designer:** P Vinh (Quant Developer) AI-assisted development workflow
-  * **Role:** Quant Developer / Quant Researcher
-  * **Contact:** ppvinh1513@gmail.com
-  * **Development Methodology:** Human Logic + AI Assisted Coding (Prompt Engineering).
+-----
 
-*“Romain Rolland: "There is only one heroism in the world: to see the world as it is, and to love it."”*
+### 👨‍💻 THÔNG TIN TÁC GIẢ
 
-```
-```
+* **Vai trò:** Quant Developer / Data Analyst
+* **Stack:** Python · Pandas · Polars · PyTorch · PyQt6 · CCXT
+* **Phương pháp:** Data-driven design · Statistical validation · Human logic + AI-assisted development
+* **Contact:** ppvinh1513@gmail.com
+
+*"Romain Rolland: 'There is only one heroism in the world: to see the world as it is, and to love it.'"*

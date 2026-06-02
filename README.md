@@ -618,21 +618,21 @@ Hệ thống hiện CLI menu, nhập số để chọn chế độ:
 
 ```
 ╔══════════════════════════════════════════════════════╗
-║            KAIROS QUANT SYSTEM  v2                   ║
+║            KAIROS QUANT SYSTEM  v2                             ║
 ╠══════════════════════════════════════════════════════╣
-║                                                      ║
-║   [1]  Giao dich Realtime      (live trading)        ║
-║   [2]  Demo / Paper Trading    (khong rui ro)        ║
-║                                                      ║
-║   [3]  Backtest Don luong      (bar-to-bar)          ║
-║   [4]  Backtest Da luong       (bar-to-bar parallel) ║
-║   [5]  Vectorized Backtest     (toan bo dataset)     ║
-║                                                      ║
-║   [6]  ML Training             (huan luyen model)    ║
-║                                                      ║
-║   [7]  Dashboard Analytics     (GUI PyQt6)           ║
-║                                                      ║
-║   [0]  Thoat                                         ║
+║                                                                ║
+║   [1]  Giao dich Realtime      (live trading)                  ║
+║   [2]  Demo / Paper Trading    (khong rui ro)                  ║
+║                                                                ║
+║   [3]  Backtest Don luong      (bar-to-bar)                    ║
+║   [4]  Backtest Da luong       (bar-to-bar parallel)           ║
+║   [5]  Vectorized Backtest     (toan bo dataset)               ║
+║                                                                ║
+║   [6]  ML Training             (huan luyen model)              ║
+║                                                                ║
+║   [7]  Dashboard Analytics     (GUI PyQt6)                     ║
+║                                                                ║
+║   [0]  Thoat                                                   ║
 ╚══════════════════════════════════════════════════════╝
 
 Chon chuc nang [0-7]:
@@ -689,6 +689,7 @@ Repository này là bản nền tảng mang tính Proof-of-Concept về kiến t
 
 ### THÔNG TIN TÁC GIẢ
 
+* **Tác giả:** P Vinh
 * **Vai trò:** Data Analyst · Quant Researcher
 * **Stack:** Python · Pandas · Polars · PyTorch · DuckDB · PyQt6 · CCXT
 * **Phương pháp:** Data-driven design · Statistical validation · Human logic + AI-assisted development

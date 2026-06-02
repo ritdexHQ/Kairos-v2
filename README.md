@@ -2,7 +2,7 @@
  
 <img width="124" height="124" alt="image" src="https://github.com/user-attachments/assets/bf450abd-f468-43fa-9750-464e3ef95651" />
 
-# KAIROS QUANT SYSTEM
+# Kairos v2
 ### **End-to-End Data Analytics Pipeline for Financial Market Research**
 
 [![Python](https://img.shields.io/badge/Python-3.12+-blue?style=for-the-badge&logo=python)](https://www.python.org/)

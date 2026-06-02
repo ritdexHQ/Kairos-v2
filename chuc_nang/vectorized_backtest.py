@@ -30,6 +30,7 @@ try:
 
     from chien_luoc.logic_vectorized.quan_ly_chien_luoc import tong_hop_tin_hieu
     from ml.trang_thai_thi_truong_ml.ml_predict import du_doan_trang_thai_ml_vector
+    from utils.kho_du_lieu import luu_ket_qua_backtest, tao_run_id, thong_ke_tong_quat
 
 except ImportError as e:
     logger.info(f"❌ Lỗi Import: {e}")
@@ -53,8 +54,9 @@ def vectorized_backtest():
 
     von_hien_tai = VON_BAN_DAU
     tong_lich_su_lenh = []
-    
-    logger.info(f"🚀 BẮT ĐẦU BACKTEST TỔNG HỢP: {START_DATE} -> {END_DATE}")
+    run_id = tao_run_id()
+
+    logger.info(f"BẮT ĐẦU BACKTEST TỔNG HỢP: {START_DATE} -> {END_DATE}  [run_id={run_id}]")
 
     for symbol in DS_SYMBOL:
         logger.info(f"🔍 Đang xử lý cặp: {symbol}")
@@ -76,18 +78,22 @@ def vectorized_backtest():
             df = df.reset_index()
 
         # --- LOGIC BACKTEST CHI TIẾT ---
-        vi_the = 0 
+        vi_the = 0
         gia_vao = 0
         co_tin_hieu = 0
-        
-        # Chuyển sang mảng numpy để loop nhanh
-        signals  = df['signal'].values
-        opens    = df['open'].values
-        closes   = df['close'].values
-        times    = df['timestamp'].values
-        sl_pcts  = df['sl_pct'].values  if 'sl_pct'  in df.columns else [0.05] * len(df)
-        tp_pcts  = df['tp_pct'].values  if 'tp_pct'  in df.columns else [0.10] * len(df)
+        regime_vao = 0          # khởi tạo tránh NameError nếu loop không vào lệnh nào
+
+        # Chuyển sang mảng numpy trước loop — tránh truy cập frame bên trong loop
+        signals   = df['signal'].values
+        opens     = df['open'].values
+        closes    = df['close'].values
+        highs     = df['high'].values    if 'high'     in df.columns else closes.copy()
+        lows      = df['low'].values     if 'low'      in df.columns else closes.copy()
+        times     = df['timestamp'].values
+        sl_pcts   = df['sl_pct'].values  if 'sl_pct'   in df.columns else [0.05] * len(df)
+        tp_pcts   = df['tp_pct'].values  if 'tp_pct'   in df.columns else [0.10] * len(df)
         leverages = df['leverage'].values if 'leverage' in df.columns else [DON_BAY] * len(df)
+        regimes   = df['regime'].values  if 'regime'   in df.columns else [0] * len(df)
 
         sl_gia = 0.0
         tp_gia = 0.0
@@ -96,14 +102,15 @@ def vectorized_backtest():
             tin_hieu_hien_tai = signals[i]
             gia_open  = opens[i]
             gia_close = closes[i]
-            gia_high  = df['high'].values[i] if 'high' in df.columns else gia_close
-            gia_low   = df['low'].values[i]  if 'low'  in df.columns else gia_close
+            gia_high  = highs[i]
+            gia_low   = lows[i]
             thoi_gian = times[i]
             don_bay_i = int(leverages[i])
 
             # A. VÀO LỆNH tại Open nến sau khi tín hiệu xuất hiện
             if co_tin_hieu != 0 and vi_the == 0:
-                vi_the  = co_tin_hieu
+                vi_the   = co_tin_hieu
+                regime_vao = int(regimes[i - 1]) if i > 0 else 0
                 phi_truot = gia_open * SLIPPAGE
                 gia_vao = gia_open + phi_truot if vi_the == 1 else gia_open - phi_truot
 
@@ -152,12 +159,14 @@ def vectorized_backtest():
                     tong_lich_su_lenh.append({
                         'Symbol':   symbol,
                         'Loại':     loai,
+                        'Regime':   regime_vao,
                         'Giá vào':  gia_vao,
                         'Giá đóng': gia_dong,
                         'Leverage': don_bay_i,
                         'PnL':      pnl_net,
                         'Time':     thoi_gian,
-                        'Balance':  von_hien_tai
+                        'Balance':  von_hien_tai,
+                        'Strategy': '',   # vectorized không track tên chiến lược per-lệnh
                     })
                     vi_the = 0
 
@@ -169,6 +178,44 @@ def vectorized_backtest():
             vectorized_backtest.dict_du_lieu_gui = {}
             
         vectorized_backtest.dict_du_lieu_gui[symbol] = df.copy()
+
+    # ─── LƯU VÀO DATA WAREHOUSE ─────────────────────────────────────────────
+    if tong_lich_su_lenh:
+        df_lenh = pd.DataFrame(tong_lich_su_lenh)
+        luu_ket_qua_backtest(
+            tong_lich_su_lenh, run_id, 'backtest_vector',
+            config={
+                'tu_ngay':     START_DATE,
+                'den_ngay':    END_DATE,
+                'symbols':     DS_SYMBOL,
+                'von_ban_dau': VON_BAN_DAU,
+                'phi_gd':      PHI_GD,
+                'slippage':    SLIPPAGE,
+                'don_bay':     DON_BAY,
+            }
+        )
+        logger.info(f"Đã lưu {len(tong_lich_su_lenh)} lệnh vào warehouse [run_id={run_id}]")
+
+    # ─── TÓM TẮT KẾT QUẢ ────────────────────────────────────────────────────
+    if tong_lich_su_lenh:
+        df_result = pd.DataFrame(tong_lich_su_lenh)
+        tong_lenh   = len(df_result)
+        so_thang    = (df_result['PnL'] > 0).sum()
+        winrate     = so_thang / tong_lenh * 100 if tong_lenh else 0
+        tong_pnl    = df_result['PnL'].sum()
+        pnl_pct     = (von_hien_tai - VON_BAN_DAU) / VON_BAN_DAU * 100
+
+        logger.info("=" * 60)
+        logger.info(f"📋 KẾT QUẢ BACKTEST: {START_DATE} → {END_DATE}")
+        logger.info(f"   Vốn ban đầu : {VON_BAN_DAU:,.0f} USDT")
+        logger.info(f"   Vốn cuối    : {von_hien_tai:,.2f} USDT  ({pnl_pct:+.2f}%)")
+        logger.info(f"   Tổng lệnh   : {tong_lenh}")
+        logger.info(f"   Thắng / Thua: {so_thang} / {tong_lenh - so_thang}")
+        logger.info(f"   Win rate    : {winrate:.1f}%")
+        logger.info(f"   Tổng PnL    : {tong_pnl:+,.2f} USDT")
+        logger.info("=" * 60)
+    else:
+        logger.warning("⚠️ Không có lệnh nào được thực hiện trong khoảng thời gian này.")
 
     return tong_lich_su_lenh, vectorized_backtest.dict_du_lieu_gui
 

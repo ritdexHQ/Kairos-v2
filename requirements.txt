@@ -1,101 +1,44 @@
-﻿aiodns
-aiohappyeyeballs
-aiohttp
-aiosignal
-altgraph
-async-timeout
-attrs
-backtrader
-blinker
-ccxt
-certifi
-cffi
-charset-normalizer
-click
-cloudpickle
-coincurve
-colorama
-contourpy
-cryptography
-cycler
-dash
-dash-bootstrap-components
-dask
-exceptiongroup
-filelock
-Flask
-fonttools
-frozenlist
-fsspec
-idna
-importlib_metadata
-iniconfig
-intel-openmp
-itsdangerous
-Jinja2
-joblib
-kiwisolver
-locket
-markdown-it-py
-MarkupSafe
-matplotlib
-mdurl
-mkl
-mpmath
-multidict
-narwhals
-nest-asyncio
-networkx
+# =============================================================
+# Kairos-v2 — Python Dependencies
+# Python >= 3.10
+# Install: pip install -r requirements.txt
+# =============================================================
+
+# ----- Core Data Science -----
 numpy
-packaging
 pandas
-partd
-pefile
-pillow
-plotext
-plotly
-pluggy
 polars
-polars-runtime-32
-propcache
 pyarrow
-pycares
-pycparser
-Pygments
-pyinstaller
-pyinstaller-hooks-contrib
-pyparsing
+
+# ----- Trading & Finance -----
+ccxt
+ta
+
+# ----- Machine Learning -----
+scikit-learn
+joblib
+torch
+
+# ----- Visualization -----
+matplotlib
+pyqtgraph
+
+# ----- GUI / Desktop -----
 PyQt6
 PyQt6-Charts
-PyQt6-Charts-Qt6
-PyQt6-Qt6
-PyQt6_sip
-pyqtgraph
-pytest
-python-dateutil
-python-dotenv
-pytz
-pywin32-ctypes
-PyYAML
+
+# ----- HTTP / Networking -----
 requests
-retrying
-rich
-scikit-learn
-scipy
-six
-sympy
-ta
-tbb
-threadpoolctl
-tomli
-toolz
-torch
-torchaudio
-torchvision
-typing_extensions
-tzdata
-urllib3
 websocket-client
-Werkzeug
-yarl
-zipp
+
+# ----- Data Warehouse -----
+duckdb          # Embedded SQL analytics — lưu và truy vấn kết quả backtest
+
+# ----- Config -----
+PyYAML
+
+# ----- Terminal / Logging -----
+rich
+
+# ----- Testing -----
+pytest

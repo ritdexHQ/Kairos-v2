@@ -16,6 +16,7 @@ try:
     from utils.thoi_gian import lay_timestamp_ms
 
     from ml.trang_thai_thi_truong_ml.ml_predict import danh_gia_ml
+    from utils.kho_du_lieu import luu_ket_qua_backtest, tao_run_id
 except ImportError as e:
     logger.info(f"❌ Lỗi Import: {e}")
     logger.info("Vui lòng chạy script từ thư mục gốc hoặc đảm bảo cấu trúc thư mục đúng.")
@@ -40,6 +41,7 @@ def chay_backtest(return_data=False, callback=None):
 
     von_hien_tai = VON_BAN_DAU
     lich_su_lenh = []
+    run_id = tao_run_id()
 
     bien_dong_tai_san = [{'time': START_DATE, 'balance': VON_BAN_DAU}]
 
@@ -174,18 +176,20 @@ def chay_backtest(return_data=False, callback=None):
                     )
                     
                     lich_su_lenh.append({
-                        'symbol': symbol,
+                        'symbol':    symbol,
                         'time_open': time_open,
                         'time_close': str_time,
-                        'side': side,
-                        'entry': entry,
-                        'exit': gia_khop_thoat,
-                        'leverage': don_bay,
-                        'pnl_usd': real_pnl_usd,
-                        'pnl_pct': real_pnl_usd/vi_the['value'],
-                        'score': vi_the['diem'],
-                        'strategy': chien_luoc,
-                        'reason': ly_do_thoat,
+                        'side':      side,
+                        'entry':     entry,
+                        'exit':      gia_khop_thoat,
+                        'leverage':  don_bay,
+                        'pnl_usd':   real_pnl_usd,
+                        'pnl_pct':   real_pnl_usd / vi_the['value'],
+                        'score':     vi_the['diem'],
+                        'strategy':  chien_luoc,
+                        'reason':    ly_do_thoat,
+                        'balance':   von_hien_tai,
+                        'packet':    vi_the.get('packet'),
                     })
 
                     bien_dong_tai_san.append({
@@ -282,16 +286,19 @@ def chay_backtest(return_data=False, callback=None):
             real_pnl_usd = loi_nhuan_tho - phi_dong - phi_mo_lenh
             
             lich_su_lenh.append({
-                'symbol': symbol,
-                'time_open': time_open,
+                'symbol':     symbol,
+                'time_open':  time_open,
                 'time_close': last_time_str,
-                'side': side,
-                'entry': entry,
-                'exit': gia_khop_thoat,
-                'pnl_usd': real_pnl_usd,
-                'pnl_pct': raw_pnl_pct,
-                'reason': "FORCE CLOSE (END)",
-                'balance': von_hien_tai
+                'side':       side,
+                'entry':      entry,
+                'exit':       gia_khop_thoat,
+                'leverage':   don_bay,
+                'pnl_usd':    real_pnl_usd,
+                'pnl_pct':    raw_pnl_pct,
+                'strategy':   vi_the.get('chien_luoc', ''),
+                'reason':     "FORCE CLOSE (END)",
+                'balance':    von_hien_tai,
+                'packet':     vi_the.get('packet'),
             })
             bien_dong_tai_san.append({'time': last_time_str, 'balance': von_hien_tai})
 
@@ -322,8 +329,18 @@ def chay_backtest(return_data=False, callback=None):
 
     if lich_su_lenh:
         save_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'du_lieu', 'thong_tin_lenh', f"ket_qua_backtest_{int(time.time())}.csv")
-        pl.DataFrame(lich_su_lenh).write_csv(save_path)
-        logger.info(f"💾 Đã lưu lịch sử lệnh tại: {save_path}")
+        pl.DataFrame([{k: v for k, v in r.items() if k != 'packet'} for r in lich_su_lenh]).write_csv(save_path)
+        logger.info(f"Đã lưu lịch sử lệnh tại: {save_path}")
+
+        luu_ket_qua_backtest(
+            lich_su_lenh, run_id, 'backtest_bar',
+            config={
+                'tu_ngay': START_DATE, 'den_ngay': END_DATE,
+                'symbols': DS_SYMBOL, 'von_ban_dau': VON_BAN_DAU,
+                'phi_gd': PHI_GD, 'slippage': SLIPPAGE, 'don_bay': DON_BAY,
+            }
+        )
+        logger.info(f"Đã lưu {len(lich_su_lenh)} lệnh vào warehouse [run_id={run_id}]")
 
     if return_data:
         return {

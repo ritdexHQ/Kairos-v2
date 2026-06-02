@@ -18,6 +18,7 @@ try:
     from chien_luoc.logic_bar_to_bar.chien_luoc_don_bay import phan_tich_don_bay
 
     from ml.trang_thai_thi_truong_ml.ml_predict import danh_gia_ml
+    from utils.kho_du_lieu import luu_ket_qua_backtest, tao_run_id
 except ImportError as e:
     logger.info(f"❌ Lỗi Import: {e}")
     logger.info("Vui lòng chạy script từ thư mục gốc hoặc đảm bảo cấu trúc thư mục đúng.")
@@ -157,18 +158,20 @@ def backtest_1_symbol(symbol, config_backtest, config_trading, result_queue):
                     )
                     
                     lich_su_lenh.append({
-                        'symbol': symbol,
-                        'side': side,
-                        'time_open': time_open,
+                        'symbol':     symbol,
+                        'side':       side,
+                        'time_open':  time_open,
                         'time_close': str_time,
-                        'entry': entry,
-                        'exit': gia_khop_thoat,
-                        'leverage': don_bay,
-                        'pnl_usd': real_pnl_usd,
-                        'pnl_pct': real_pnl_usd/vi_the['value'],
-                        'score': vi_the['diem'],
-                        'strategy': chien_luoc,
-                        'reason': ly_do_thoat,
+                        'entry':      entry,
+                        'exit':       gia_khop_thoat,
+                        'leverage':   don_bay,
+                        'pnl_usd':    real_pnl_usd,
+                        'pnl_pct':    real_pnl_usd / vi_the['value'],
+                        'score':      vi_the['diem'],
+                        'strategy':   chien_luoc,
+                        'reason':     ly_do_thoat,
+                        'balance':    von_hien_tai,
+                        'packet':     vi_the.get('packet'),
                     })
 
                     bien_dong_tai_san.append({
@@ -236,16 +239,19 @@ def backtest_1_symbol(symbol, config_backtest, config_trading, result_queue):
             von_hien_tai += net_profit
 
             lich_su_lenh.append({
-                'symbol': symbol, 
-                'time_open': vi_the['time_open'], 
+                'symbol':     symbol,
+                'time_open':  vi_the['time_open'],
                 'time_close': last_time_str,
-                'side': side, 
-                'entry': entry, 
-                'exit': last_price_close,
-                'pnl_usd': net_profit - vi_the.get('phi_mo', 0), 
-                'pnl_pct': raw_pnl_pct,
-                'reason': "FORCE CLOSE (END)", 
-                'balance': von_hien_tai
+                'side':       side,
+                'entry':      entry,
+                'exit':       last_price_close,
+                'leverage':   don_bay,
+                'pnl_usd':    net_profit - vi_the.get('phi_mo', 0),
+                'pnl_pct':    raw_pnl_pct,
+                'strategy':   vi_the.get('chien_luoc', ''),
+                'reason':     "FORCE CLOSE (END)",
+                'balance':    von_hien_tai,
+                'packet':     vi_the.get('packet'),
             })
             result_queue.put({"symbol": symbol, "trades": lich_su_lenh})
 
@@ -263,6 +269,7 @@ def chay_backtest(return_data=False, callback=None):
     DS_SYMBOL = config_trading.get('cap_giao_dich', [])
     total_symbols = len(DS_SYMBOL)
     VON_BAN_DAU = float(config_backtest.get('so_du_ban_dau', 10000))
+    run_id = tao_run_id()
 
     config_luong = config_backtest.get('so_luong_luong')
     num_workers = int(config_luong) if config_luong else max(1, os.cpu_count() - 1)
@@ -378,9 +385,22 @@ def chay_backtest(return_data=False, callback=None):
         folder_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'du_lieu', 'lich_su_gia')
         os.makedirs(folder_path, exist_ok=True)
         save_path = os.path.join(folder_path, f"ket_qua_backtest_daluong_{int(time.time())}.csv")
-        
-        pl.DataFrame(all_trades_merged).write_csv(save_path)
-        logger.info(f"💾 Đã lưu lịch sử lệnh tại: {save_path}")
+        pl.DataFrame([{k: v for k, v in t.items() if k != 'packet'} for t in all_trades_merged]).write_csv(save_path)
+        logger.info(f"Da luu lich su lenh tai: {save_path}")
+
+        luu_ket_qua_backtest(
+            all_trades_merged, run_id, 'backtest_da_luong',
+            config={
+                'tu_ngay':     config_backtest.get('ngay_bat_dau', ''),
+                'den_ngay':    config_backtest.get('ngay_ket_thuc', ''),
+                'symbols':     DS_SYMBOL,
+                'von_ban_dau': VON_BAN_DAU,
+                'phi_gd':      float(config_backtest.get('phi_giao_dich', 0.001)),
+                'slippage':    float(config_backtest.get('do_truot_gia', 0.0005)),
+                'don_bay':     int(config_trading.get('don_bay', 1)),
+            }
+        )
+        logger.info(f"Da luu {len(all_trades_merged)} lenh vao warehouse [run_id={run_id}]")
 
     final_output = {
         "trades": all_trades_merged,

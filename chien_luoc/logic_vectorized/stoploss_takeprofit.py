@@ -26,15 +26,15 @@ def them_sl_tp(df, time_frame='1h', base_sl=2.5, rr=2.0):
         df['tp_pct'] = base_sl * rr / 100
         return df
 
-    atr      = df[col_atr].fillna(method='ffill').fillna(0)
-    atr_mean = df[col_mean].fillna(method='ffill').fillna(atr)
+    atr      = df[col_atr].ffill().fillna(0)
+    atr_mean = df[col_mean].ffill().fillna(atr)
 
     # vol_ratio > 1 = biến động cao → SL rộng hơn để không bị noise quét stop
     vol_ratio = (atr / (atr_mean + 1e-9)).clip(0.5, 3.0)
     he_so_sl  = (base_sl / vol_ratio).clip(1.0, 5.0)
     he_so_tp  = he_so_sl * rr
 
-    close = df['close'].replace(0, np.nan).fillna(method='ffill')
+    close = df['close'].replace(0, np.nan).ffill()
 
     df['sl_pct'] = (atr * he_so_sl / close).clip(0.005, 0.15)  # 0.5% – 15%
     df['tp_pct'] = (atr * he_so_tp / close).clip(0.01,  0.30)  # 1%   – 30%

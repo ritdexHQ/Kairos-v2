@@ -40,6 +40,7 @@ from chien_luoc.logic_bar_to_bar.stoploss_takeprofit import tinh_sl_tp_theo_atr
 from chien_luoc.logic_bar_to_bar.quan_ly_chien_luoc import chien_luoc_vao_lenh, chien_luoc_thoat_lenh
 
 from ml.trang_thai_thi_truong_ml.ml_predict import danh_gia_ml
+from utils.kho_du_lieu import luu_lenh_don, luu_run, tao_run_id
 
 CONFIG = lay_cau_hinh_giao_dich()
 SAN_CHINH = CONFIG.get('san_giao_dich_chinh', 'binance').lower()
@@ -54,6 +55,7 @@ MAX_OPEN_ORDERS = CONFIG.get('max_lenh_cho_phep')
 
 CHUC_NANG = 'realtime'
 DANG_CHAY = True
+REALTIME_RUN_ID = tao_run_id()
 data_san = lay_thong_tin_san()
 MIN_NOTIONAL = data_san.get(SAN_CHINH, {}).get('min_notional', 5.0)
 
@@ -220,35 +222,38 @@ def luong_quan_ly_vi_the():
                             ly_do = f"SIGNAL ({ly_do_thoat})"
 
                     if can_thoat:
-                        logger.info(f"🔴 Đang đóng {symbol}: {ly_do}")
+                        logger.info(f"Dang dong {symbol}: {ly_do}")
 
                         ket_qua = thuc_hien_dong_lenh(SAN_CHINH, symbol, vi_the_side, size)
                         if ket_qua:
 
                             lich_su = {
-                                'day': datetime.now().strftime('%Y-%m-%d'),
-                                'symbol': symbol,
-                                'side': vi_the_side,
+                                'day':         datetime.now().strftime('%Y-%m-%d'),
+                                'symbol':      symbol,
+                                'side':        vi_the_side,
                                 'entry_price': info_lenh['entry_price'],
-                                'exit_price': gia_dong_du_kien,
-                                'open_time': info_lenh['time'],
-                                'close_time': datetime.now().strftime('%H:%M:%S'),
-                                'pnl': lai_lo_percent,
-                                'score': info_lenh['diem'],
-                                'strategy': chien_luoc,
-                                'reason': ly_do
+                                'exit_price':  gia_dong_du_kien,
+                                'open_time':   info_lenh['time'],
+                                'close_time':  datetime.now().strftime('%H:%M:%S'),
+                                'pnl':         lai_lo_percent,
+                                'score':       info_lenh['diem'],
+                                'strategy':    chien_luoc,
+                                'reason':      ly_do,
+                                'leverage':    info_lenh.get('leverage', 1),
+                                'so_du':       0.0,   # balance không track trong realtime
+                                'packet_ml':   packet_ml,
                             }
 
+                            luu_lenh_don(REALTIME_RUN_ID, 'realtime', lich_su)
                             quan_ly_lenh.lich_su_lenh(CHUC_NANG, lich_su)
-
                             quan_ly_lenh.xoa_lenh(CHUC_NANG, symbol)
-
-                            gui_tin_nhan_telegram(f"💰 Đã đóng {symbol}: {ly_do}")
+                            gui_tin_nhan_telegram(f"Da dong {symbol}: {ly_do}")
 
                             # Đánh giá hiệu quả ML
-                            if VON_BAN_DAU > dinh_tai_khoan:
-                                dinh_tai_khoan = VON_BAN_DAU
-                            account_drawdown = (VON_BAN_DAU - dinh_tai_khoan) / dinh_tai_khoan * 100
+                            so_du_uoc_tinh = VON_BAN_DAU * (1 + lai_lo_percent / 100)
+                            if so_du_uoc_tinh > dinh_tai_khoan:
+                                dinh_tai_khoan = so_du_uoc_tinh
+                            account_drawdown = (so_du_uoc_tinh - dinh_tai_khoan) / dinh_tai_khoan * 100
                             danh_gia_ml(packet_ml, lai_lo_percent, account_drawdown)
 
                 except Exception as e:
@@ -270,6 +275,7 @@ def chay_realtime():
     logger.info(f" 💰 Vốn gốc    : {VON_BAN_DAU:,.2f}$")
     logger.info(f" 📦 Max Orders : {MAX_OPEN_ORDERS}")
     quan_ly_lenh.load_trang_thai(CHUC_NANG)
+    luu_run(REALTIME_RUN_ID, 'realtime', {'von_ban_dau': VON_BAN_DAU, 'symbols': LIST_COIN})
     logger.info("─"*52)
     print("")
 

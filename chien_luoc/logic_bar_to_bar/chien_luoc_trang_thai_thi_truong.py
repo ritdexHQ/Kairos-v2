@@ -12,22 +12,23 @@ import polars as pl
 from chien_luoc.logic_bar_to_bar.phan_tich_ky_thuat.chu_ky import pt_kiem_tra_gio, pt_kiem_tra_ngay
 from ml.trang_thai_thi_truong_ml.ml_predict import du_doan_trang_thai_ml
 
-def phan_tich_trang_thai_thi_truong(symbol, Datetime, df_1m, df_3m, df_5m, df_15m, df_30m, df_1h):
+def phan_tich_trang_thai_thi_truong(symbol, Datetime, df_1m, df_3m, df_5m, df_15m, df_30m, df_1h, df_4h):
     # 1. Kiểm tra điều kiện thời gian (Giữ nguyên vì dt là đối tượng đơn lẻ)
     kq_ngay = pt_kiem_tra_ngay(Datetime)
     kq_gio = pt_kiem_tra_gio(Datetime)
-    
+
     if not (kq_ngay['trang_thai'] == 'HỢP_LỆ' and kq_gio['trang_thai'] == 'HỢP_LỆ'):
-        # Trả về lý do cụ thể (Cuối tuần hoặc Giờ giãn spread)
         ly_do = kq_ngay['trang_thai'] if kq_ngay['trang_thai'] != 'HỢP_LỆ' else kq_gio['trang_thai']
         return False, f"NGHỈ ({ly_do})"
 
-    # 2. Kiểm tra độ dài dữ liệu bằng Polars (Sử dụng .height)
+    # 2. Kiểm tra độ dài dữ liệu (ML cần >= 120 nến 1H và >= 120 nến 4H)
     if df_1h is None or df_1h.height < 120:
         return False, "THIẾU_DỮ_LIỆU (1H)"
+    if df_4h is None or df_4h.height < 60:
+        return False, "THIẾU_DỮ_LIỆU (4H)"
 
-    # 3. Dự đoán trạng thái bằng ML (Hàm này đã được tối ưu Polars ở các bước trước)
-    packet = du_doan_trang_thai_ml(df_1m, df_3m, df_5m, df_15m, df_30m, df_1h)
+    # 3. Dự đoán trạng thái bằng ML — đúng 4 khung thời gian mô hình yêu cầu
+    packet = du_doan_trang_thai_ml(df_5m, df_15m, df_1h, df_4h)
 
     if packet is None:
         return False, "ML_DỰ_ĐOÁN_LỖI"

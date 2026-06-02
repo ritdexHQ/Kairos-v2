@@ -9,7 +9,7 @@
 [![Domain](https://img.shields.io/badge/Domain-FinTech%20%2F%20Crypto-orange?style=for-the-badge)](https://www.binance.com/)
 [![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
-`Python` • `Pandas` • `Polars` • `Scikit-Learn` • `PyTorch` • `ETL Pipeline` • `Time-Series` • `Feature Engineering`
+`Python` • `Pandas` • `Polars` • `Scikit-Learn` • `PyTorch` • `DuckDB` • `ETL Pipeline` • `Time-Series` • `Feature Engineering`
 
 </div>
 
@@ -23,6 +23,7 @@
 * **Feature Engineering trên Time-Series quy mô lớn:** Trích xuất 50+ đặc trưng (RSI, ATR, EMA, Bollinger Bands, Volume Profile, Fractal, CVD...) trên 8 khung thời gian đồng thời (**1m–1d**) với kỹ thuật tránh look-ahead bias nghiêm ngặt.
 * **Xử lý dữ liệu hiệu suất cao:** Ứng dụng **vectorization** với Pandas/Polars để xử lý hàng triệu dòng dữ liệu, tăng tốc **100x+** so với vòng lặp tuần tự — thực tiễn trực tiếp cho bài toán dữ liệu quy mô lớn.
 * **Xây dựng ML Pipeline hoàn chỉnh:** Từ feature extraction, labeling, training (**PyTorch TradingMLP**) đến validation và deployment — phân loại trạng thái thị trường thành 6 nhóm với confidence scoring.
+* **SQL Analytics & Data Warehouse (DuckDB):** Toàn bộ kết quả backtest được lưu vào embedded data warehouse. Truy vấn SQL để phân tích winrate theo giờ/ngày, PnL theo ML regime, profit factor, max drawdown — biến trade log thành structured analytical layer.
 * **Backtesting như Hypothesis Testing:** Thiết kế framework kiểm định giả thuyết thống kê trên dữ liệu lịch sử — đánh giá chất lượng mô hình, phát hiện overfitting và đo lường tính tổng quát hóa.
 * **Interactive Analytics Dashboard:** Xây dựng dashboard phân tích hiệu suất (PyQt6) với Equity Curve, Drawdown Chart, Heatmap theo giờ/ngày, Scatter PnL — biến raw trade log thành actionable insights.
 
@@ -39,7 +40,8 @@
 - Xây dựng pipeline xử lý dữ liệu lịch sử **hàng triệu dòng** trên nhiều năm, nhiều cặp tài sản song song
 - Tăng tốc phân tích bằng vectorization: từ vài giờ xuống còn vài phút cho cùng khối lượng dữ liệu
 - Feature engineering đa khung thời gian không look-ahead bias — điều kiện bắt buộc cho mô phỏng dữ liệu thực
-- Tự động hóa toàn bộ vòng đời dữ liệu: **Thu thập → Xử lý → Phân tích → Trực quan hóa**
+- Data warehouse SQL (DuckDB): mỗi lần chạy backtest được lưu lại, query phân tích winrate/PnL/drawdown theo giờ, thứ, ML regime
+- Tự động hóa toàn bộ vòng đời dữ liệu: **Thu thập → Xử lý → Phân tích → Lưu trữ SQL → Trực quan hóa**
 
 ## Mục lục (Table of Contents)
 
@@ -50,12 +52,14 @@
 5. [Feature Engineering & Hệ thống Chấm điểm Tín hiệu](#5)
 6. [ML Pipeline: Phân loại Trạng thái Thị trường](#6)
 7. [Analytics Dashboard & Trực quan hóa](#7)
-8. [Quản trị Rủi ro & Kiểm soát Chất lượng Mô hình](#8)
-9. [Cấu trúc thư mục](#9)
-10. [Yêu cầu & Hướng dẫn cài đặt](#10)
-11. [Hướng dẫn cấu hình](#11)
-12. [Lộ trình phát triển](#12)
-13. [Cảnh báo rủi ro](#13)
+8. [SQL Analytics & Data Warehouse](#8)
+9. [Quản trị Rủi ro & Kiểm soát Chất lượng Mô hình](#9)
+10. [Cấu trúc thư mục](#10)
+11. [Yêu cầu & Hướng dẫn cài đặt](#11)
+12. [Hướng dẫn cấu hình](#12)
+13. [Lộ trình phát triển](#13)
+14. [Chia sẻ của tác giả](#14)
+15. [Cảnh báo rủi ro](#15)
 
 -----
 
@@ -85,7 +89,7 @@ Thị trường tài chính sinh ra hàng triệu điểm dữ liệu mỗi ngà
 | Tiền xử lý | Resampling đa khung, fill NA, timestamp alignment |
 | Feature Engineering | 50+ indicators trên 8 timeframes, MTF vectorization |
 | Kiểm định | Walk-forward backtest, look-ahead bias prevention |
-| Mô hình hóa | Classification (6 market regimes), ResBlock MLP |
+| Mô hình hóa | Classification (8 market regimes), ResBlock MLP |
 | Trực quan hóa | Interactive dashboard: equity curve, heatmap, PnL scatter |
 
 -----
@@ -105,12 +109,19 @@ Hệ thống được thiết kế theo **kiến trúc pipeline modular**, đả
 * **Statistical Signal Engine:** Kết hợp đa tầng phân tích (cấu trúc giá, khối lượng, động lượng, biến động, tâm lý thị trường) thành hệ thống chấm điểm tín hiệu có trọng số, cho phép giải thích được kết quả (interpretable output).
 * **Analytics Dashboard:** Ứng dụng Desktop (PyQt6) để phân tích kết quả, so sánh mô hình, khám phá dữ liệu tương tác — không chỉ là biểu đồ giá mà là hệ thống **Performance Analytics** chuyên sâu.
 
-### 4 chế độ vận hành của Pipeline
+### 7 chế độ vận hành — chọn qua CLI menu
 
-1. **Data Streaming (Realtime):** Thu thập và xử lý dữ liệu thị trường theo thời gian thực — benchmark độ trễ pipeline và kiểm thử model trên live data.
-2. **Forward Testing (Demo):** Chạy toàn bộ pipeline trên dữ liệu thật theo thời gian thực nhưng không có rủi ro tài chính — đánh giá model performance trong điều kiện thực tế.
-3. **Bar-to-Bar Simulation (Event-driven Backtest):** Mô phỏng nghiêm ngặt từng nến theo thứ tự thời gian — loại bỏ look-ahead bias hoàn toàn, hỗ trợ cả đơn luồng và đa luồng song song.
-4. **Vectorized Analysis:** Ứng dụng matrix operations trên toàn bộ dataset lịch sử — **nhanh hơn 100x** so với event-driven, phục vụ R&D và hyperparameter search.
+Khởi động bằng `python main.py`, hệ thống hiện menu để chọn chế độ:
+
+| # | Chế độ | Mô tả |
+|---|--------|-------|
+| 1 | **Giao dịch Realtime** | Kết nối sàn thật, thực thi lệnh qua CCXT |
+| 2 | **Demo / Paper Trading** | Pipeline đầy đủ, không đặt lệnh thật |
+| 3 | **Backtest Đơn luồng** | Bar-to-bar simulation, 1 CPU thread |
+| 4 | **Backtest Đa luồng** | Bar-to-bar parallel, nhiều symbol song song |
+| 5 | **Vectorized Backtest** | Matrix operations trên toàn bộ dataset — nhanh hơn 100x |
+| 6 | **ML Training** | Huấn luyện/đánh giá/deploy model phân loại regime |
+| 7 | **Dashboard Analytics** | Giao diện PyQt6 — equity curve, heatmap, PnL scatter |
 
 -----
 
@@ -140,12 +151,13 @@ Hệ thống được thiết kế theo **kiến trúc pipeline modular**, đả
 | **Sentiment** | Funding Rate, Open Interest, Long/Short Ratio, Fear & Greed |
 | **Session** | Asian/London/NY session classification, session range H/L |
 
-### Machine Learning
+### Machine Learning & SQL Analytics
 
-* **Classification Task:** Phân loại thị trường thành 6 trạng thái → routing model phù hợp
+* **Classification Task:** Phân loại thị trường thành **8 trạng thái** (regime 0-7) → routing đến chiến lược phù hợp
 * **Architecture:** PyTorch MLP với ResBlock + BatchNorm + Dropout (chống overfitting)
-* **Feature Pipeline:** Polars-based extraction → normalization → model input
+* **Feature Pipeline:** 18 features × 4 timeframes (5M/15M/1H/4H) = **80 features** — Polars-based, không look-ahead bias
 * **Evaluation:** Walk-forward validation, confusion matrix, confidence scoring
+* **SQL Analytics:** DuckDB embedded warehouse — lưu kết quả từ 5 chế độ vận hành, truy vấn cross-run analysis
 
 ### Visualization & Analytics
 
@@ -165,34 +177,42 @@ Hệ thống được phân tách rõ ràng thành các tầng độc lập (Sep
 graph TD
     A[API Layer - CCXT + WebSocket] -->|Raw OHLCV + Order Book| B(ETL Layer - Làm sạch & Chuẩn hóa)
     B -->|Dữ liệu sạch đa khung| C{Feature Engineering Layer}
-    C -->|50+ Features MTF| D[ML Classification - Market Regime]
-    D -->|Regime Label| E[Signal Engine - Multi-Strategy Voting]
+    C -->|80 Features - 18×4TF| D[ML Classification - 8 Market Regimes]
+    D -->|Regime 0-7| E[Signal Engine - ML-Gated Strategy Routing]
     E -->|Weighted Score| F{Risk & Validation Layer}
-    F -->|Validated Signal| G[Model Output / Forward Test]
-    F -->|Rejected| B
-    G -->|Result Log| H[Analytics Dashboard - PyQt6]
+    F -->|Validated Signal| G[Model Output / Execution]
+    F -->|Rejected - Regime 0 or 7| B
+    G -->|Trade Result| K[(DuckDB Warehouse)]
+    K -->|SQL Analytics| H[Analytics Dashboard - PyQt6]
 
     I[Historical Data Store] -->|Backtest Input| C
     I --> J[Vectorized Backtest Engine]
-    J -->|Performance Metrics| H
+    J -->|Trade Log| K
 ```
 
 **Tầng 1 — Data Acquisition (`/lay_du_lieu`):**  
 ETL layer kết nối REST API + WebSocket để kéo dữ liệu OHLCV đa khung, snapshot order book theo thời gian thực, và macro data (Open Interest, Fear & Greed Index). Xử lý gaps, timestamp normalization, và multi-source deduplication.
 
 **Tầng 2 — Feature Engineering (`/chien_luoc/phan_tich_ky_thuat`):**  
-Lớp tính toán 50+ technical features trên 8 timeframe đồng thời. Hai engine song song:
+Hai nhóm tính toán song song, không look-ahead bias:
+- **Signal features** (strategy layer): 50+ technical indicators trên 8 timeframe (1m→1d) — EMA, ADX, RSI, Bollinger, ATR, CVD, Fractal, FVG...
+- **ML features** (`/ml/tao_feature.py`): 18 chỉ báo cốt lõi × 4 timeframe (5M/15M/1H/4H) + 8 context = **80 dimensions** dùng riêng cho TradingMLP
+
+Hai engine xử lý:
 - `logic_bar_to_bar` — Polars-based, xử lý từng nến mới theo thời gian thực
 - `logic_vectorized` — Pandas/NumPy, xử lý toàn bộ dataset theo batch
 
 **Tầng 3 — ML Core (`/ml`):**  
-Pipeline phân loại trạng thái thị trường: feature extraction (Polars) → normalization → TradingMLP inference → confidence-weighted regime label. Output được dùng để routing signal đến strategy phù hợp.
+Phân loại thị trường thành 8 regime (0-7): feature extraction (Polars) → normalization → TradingMLP → confidence-weighted regime label. Regime 0 (Đóng_Băng) và 7 (Quét_Thanh_Khoản) bị lọc khỏi giao dịch. Regime 1-6 route sang chiến lược phù hợp.
 
 **Tầng 4 — Signal Engine (`/chien_luoc`):**  
-Hệ thống chấm điểm đa chiến lược (Ensemble Voting): mỗi strategy module độc lập trả về score, AI regime routing chọn strategy phù hợp → tổng hợp thành tín hiệu cuối cùng có thể giải thích.
+ML regime gating quyết định chiến lược nào được kích hoạt. Mỗi trong 5 chiến lược (Breakout, Squeeze, Trend Following, Mean Reversion, Scalping) chấm điểm độc lập, kết quả được chọn theo regime hiện tại.
 
-**Tầng 5 — Analytics Layer (`/hien_thi`):**  
-Dashboard trực quan hóa toàn bộ output: performance metrics, trade analysis, signal quality evaluation. Biến raw trade log thành actionable insights.
+**Tầng 5 — Data Warehouse (`/utils/kho_du_lieu.py`):**  
+Toàn bộ kết quả từ 5 chế độ vận hành (backtest_bar, backtest_da_luong, backtest_vector, demo, realtime) được lưu vào DuckDB với `run_id` riêng. Truy vấn SQL phân tích cross-run, cross-mode.
+
+**Tầng 6 — Analytics Layer (`/hien_thi`):**  
+Dashboard PyQt6 trực quan hóa kết quả: equity curve, drawdown, trade analysis, session heatmap — biến raw trade log thành actionable insights.
 
 -----
 
@@ -249,43 +269,46 @@ Trọng số thay đổi theo ML regime — khi thị trường được phân l
 
 ### Bài toán Classification
 
-**Input:** 50+ time-series features trích xuất từ 8 khung thời gian  
-**Output:** 6 nhãn trạng thái thị trường (multi-class classification)
+**Input:** 80 features — 18 chỉ báo × 4 timeframe (5M / 15M / 1H / 4H)  
+**Output:** 8 nhãn trạng thái thị trường (multi-class classification)
 
-| Nhãn | Mô tả |
-|---|---|
-| `Nén_Chặt` | Volatility thấp, Bollinger squeeze → chuẩn bị bùng nổ |
-| `Đầu_Xu_Hướng` | Breakout khỏi vùng tích lũy, volume tăng |
-| `Xu_Hướng_Mạnh` | ADX cao, EMA alignment, momentum mạnh |
-| `Cao_Trào` | Overbought/Oversold, RSI divergence, exhaustion |
-| `Hồi_Quy` | Pullback trong xu hướng lớn |
-| `Nhiễu_Động` | Low ADX, random price action, no clear structure |
+| Regime | Nhãn | Chiến lược được kích hoạt |
+|---|---|---|
+| 0 | `Đóng_Băng` | Không trade — thị trường chết |
+| 1 | `Nén_Chặt` | Squeeze — chờ bùng nổ |
+| 2 | `Đầu_Xu_Hướng` | Breakout — vào sớm theo hướng phá vỡ |
+| 3 | `Xu_Hướng_Mạnh` | Trend Following — follow trend đa khung |
+| 4 | `Cao_Trào` | Mean Reversion — đánh ngược khi kiệt sức |
+| 5 | `Hồi_Quy` | Mean Reversion — về trung bình |
+| 6 | `Nhiễu_Động` | Scalping — range trade biên độ hẹp |
+| 7 | `Quét_Thanh_Khoản` | Không trade — rủi ro cao |
 
 ### Pipeline ML hoàn chỉnh
 
 ```
-Raw OHLCV
+Raw OHLCV (1m)
     ↓ Feature Extraction (Polars, tao_feature.py)
-50+ Features × 6 Timeframes
+18 features × 4 timeframes = 80 dimensions
     ↓ Labeling (trading_teacher.py)
 Labeled Dataset (trading_memory.csv)
     ↓ Preprocessing: normalize, balance classes, train/val split
     ↓ Training: TradingMLP (PyTorch)
-        ├── ResBlock × 3 (residual connections)
-        ├── BatchNorm + Dropout (regularization)
-        └── Softmax output → 6-class probability
+        ├── Linear(80→256) + BatchNorm + GELU + Dropout(0.15)
+        ├── ResBlock × 3 (256 dim, skip connections, Dropout 0.3)
+        └── Linear(256→64) → Linear(64→8) → Softmax (8-class)
     ↓ Evaluation: confusion matrix, walk-forward validation
-    ↓ Deployment: model.pth + scaler_params.json
-    ↓ Inference: real-time prediction với confidence score
+    ↓ Deployment: model_pytorch.pth + scaler_params.json
+    ↓ Inference bar-to-bar: predict 1 nến (~20-35ms, CPU)
+    ↓ Inference vectorized: batch predict toàn dataset (~500ms)
 ```
 
 ### Kiến trúc mô hình (TradingMLP)
 
-* **Input:** normalized feature vector (50+ dimensions)
+* **Input:** 80-dim normalized feature vector (18 chỉ báo × 4 timeframe)
 * **Hidden layers:** ResBlock stacks với skip connections — giảm vanishing gradient
 * **BatchNorm:** chuẩn hóa activation giữa các layer — ổn định training
 * **Dropout:** regularization chống overfitting trên dữ liệu time-series
-* **Output:** softmax(6) → regime probabilities → confidence-based routing
+* **Output:** softmax(8) → 8 regime probabilities → confidence-based routing
 
 ### Tự động gán nhãn (Auto-labeling)
 
@@ -314,7 +337,89 @@ KAIROS tích hợp ứng dụng Desktop (PyQt6) biến kết quả phân tích t
 
 <a name="8"></a>
 
-## 8. QUẢN TRỊ RỦI RO & KIỂM SOÁT CHẤT LƯỢNG MÔ HÌNH
+## 8. SQL ANALYTICS & DATA WAREHOUSE
+
+Sau mỗi lần chạy backtest, toàn bộ lịch sử lệnh được lưu tự động vào **DuckDB** — embedded analytical database chạy trực tiếp trên file, không cần server. Mỗi lần chạy có một `run_id` riêng để so sánh giữa các chiến lược và khoảng thời gian khác nhau.
+
+### Chế độ được ghi nhận
+
+Warehouse tự động nhận dữ liệu từ **tất cả 5 chế độ vận hành**, mỗi lần chạy có `run_id` và `chuc_nang` riêng:
+
+| `chuc_nang` | Nguồn | Cách lưu |
+|---|---|---|
+| `backtest_bar` | backtest_donluong.py | Batch cuối session |
+| `backtest_da_luong` | backtest_daluong.py | Batch ở main process |
+| `backtest_vector` | vectorized_backtest.py | Batch cuối session |
+| `demo` | chay_demo.py | Streaming từng lệnh |
+| `realtime` | chay_realtime.py | Streaming từng lệnh |
+
+### Schema
+
+```sql
+-- Metadata mỗi lần chạy
+backtest_run (run_id, chuc_nang, ngay_chay, tu_ngay, den_ngay,
+              symbols, von_ban_dau, phi_gd, slippage, don_bay)
+
+-- Lịch sử từng lệnh giao dịch
+lenh         (run_id, chuc_nang, symbol, loai, chien_luoc,
+              regime, regime_name, gia_vao, gia_dong,
+              leverage, pnl, thang, thoi_gian, so_du, gio, thu, ngay)
+```
+
+### Các câu truy vấn phân tích sẵn
+
+```python
+from utils.kho_du_lieu import (
+    thong_ke_theo_gio,        # Winrate + PnL theo giờ trong ngày (0–23)
+    thong_ke_theo_thu,        # Winrate + PnL theo thứ trong tuần
+    thong_ke_theo_regime,     # PnL theo ML regime — regime nào sinh lời nhất?
+    thong_ke_theo_chien_luoc, # PnL theo chiến lược (Breakout, Scalping...)
+    thong_ke_theo_symbol,     # PnL theo từng cặp tài sản
+    thong_ke_theo_mode,       # So sánh kết quả giữa các chế độ vận hành
+    thong_ke_tong_quat,       # Summary: winrate, profit factor, drawdown
+    max_drawdown,             # Equity curve + underwater chart
+    lich_su_run,              # Danh sách tất cả lần chạy
+    chay_sql,                 # Ad-hoc SQL query tùy ý
+)
+
+# Ví dụ: regime nào có winrate cao nhất?
+thong_ke_theo_regime(run_id='20260602_100000_ab12')
+
+# Ví dụ: giờ nào trong ngày bot hoạt động tốt nhất?
+thong_ke_theo_gio(run_id='20260602_100000_ab12')
+
+# So sánh bar-to-bar vs vectorized cùng khoảng thời gian
+thong_ke_theo_mode()
+
+# Chiến lược nào hiệu quả nhất theo chế độ demo
+thong_ke_theo_chien_luoc(chuc_nang='demo')
+
+# Ad-hoc query
+chay_sql("""
+    SELECT chuc_nang, chien_luoc, ROUND(AVG(pnl), 2) AS tb_pnl, COUNT(*) AS so_lenh
+    FROM lenh
+    WHERE regime IN (2, 3)
+    GROUP BY chuc_nang, chien_luoc
+    ORDER BY tb_pnl DESC
+""")
+```
+
+### Ví dụ output — PnL theo ML regime
+
+| regime | regime_name | so_lenh | winrate_pct | tong_pnl | tb_pnl |
+|---|---|---|---|---|---|
+| 3 | Xu_Hướng_Mạnh | 142 | 61.3 | +842.5 | +5.9 |
+| 2 | Đầu_Xu_Hướng | 98 | 54.1 | +310.2 | +3.2 |
+| 6 | Nhiễu_Động | 215 | 44.2 | -180.4 | -0.8 |
+| 4 | Cao_Trào | 76 | 48.7 | -42.1 | -0.6 |
+
+Từ bảng này có thể kết luận ngay: tắt scalping ở regime Nhiễu_Động (6) — thứ không ai thấy được nếu chỉ nhìn vào tổng winrate.
+
+-----
+
+<a name="9"></a>
+
+## 9. QUẢN TRỊ RỦI RO & KIỂM SOÁT CHẤT LƯỢNG MÔ HÌNH
 
 Trong phân tích định lượng, kiểm soát rủi ro là yêu cầu bắt buộc — không chỉ về tài chính mà về chất lượng mô hình:
 
@@ -325,79 +430,131 @@ Trong phân tích định lượng, kiểm soát rủi ro là yêu cầu bắt b
 
 -----
 
-<a name="9"></a>
+<a name="10"></a>
 
-## 9. CẤU TRÚC THƯ MỤC
+## 10. CẤU TRÚC THƯ MỤC
 
 ```text
-KAIROS_QUANT_SYSTEM_v2.0/
-├── main.py                         # Entry point – điều hướng các chế độ vận hành
+Kairos-v2/
+├── main.py                              # Entry point – menu điều hướng các chế độ
+├── requirements.txt
 │
-├── config/                         # CẤU HÌNH HỆ THỐNG
-│   ├── cau_hinh_giao_dich.yaml     # Tham số phân tích: assets, khung thời gian, rủi ro
-│   ├── cau_hinh_giao_ao.json       # Cấu hình môi trường simulation/backtest
-│   ├── tai_khoan_api.json          # API credentials (mã hóa)
-│   └── thong_tin_san.yaml          # Exchange metadata (min lot, tick size)
+├── config/                              # CẤU HÌNH HỆ THỐNG
+│   ├── cau_hinh_giao_dich.yaml          # Assets, khung thời gian, tham số rủi ro
+│   ├── cau_hinh_ao_config.json          # Cấu hình môi trường simulation/backtest
+│   ├── tai_khoan_api.json               # API credentials (gitignore)
+│   ├── tai_khoan_api.json.example       # Template cấu hình API
+│   └── thong_tin_san.yaml               # Exchange metadata (min lot, tick size)
 │
-├── lay_du_lieu/                    # ETL LAYER – Thu thập & Chuẩn hóa Dữ liệu
-│   ├── lay_ohlcv.py                # Kéo OHLCV lịch sử đa khung qua CCXT
-│   ├── lay_marketsnapshot.py       # WebSocket streaming: CVD, order book, liquidation
-│   └── lay_macro.py                # Macro data: Open Interest, Fear & Greed Index
+├── lay_du_lieu/                         # ETL LAYER – Thu thập & Chuẩn hóa Dữ liệu
+│   ├── lay_ohlcv.py                     # OHLCV lịch sử + đa khung thời gian (CCXT)
+│   ├── lay_marketsnapshot.py            # WebSocket: CVD, order book, liquidation
+│   ├── lay_macro.py                     # Macro data: OI, Fear & Greed Index
+│   └── lay_thong_tin_tai_khoan.py       # Số dư, vị thế, lịch sử lệnh
 │
-├── chien_luoc/                     # FEATURE ENGINEERING & SIGNAL LAYER
-│   ├── logic_vectorized/           # Batch processing engine (Pandas/NumPy)
-│   │   ├── phan_tich_ky_thuat/     # 50+ feature computations (vectorized)
-│   │   │   ├── xu_huong.py         # Trend features: EMA, ADX, Ichimoku, Supertrend
-│   │   │   ├── cau_truc_gia.py     # Structure features: Breakout, Fractal, FVG, ZigZag
-│   │   │   ├── khoi_luong.py       # Volume features: OBV, VWAP, Volume Profile
-│   │   │   ├── dong_luong_dao_chieu.py  # Momentum: RSI, MACD, divergence
-│   │   │   ├── bien_dong.py        # Volatility: ATR, Bollinger, Keltner
-│   │   │   ├── vi_the.py           # Sentiment: CVD proxy, buyer pressure
-│   │   │   └── chu_ky.py           # Session: Asian/London/NY classification
-│   │   ├── chien_luoc/             # 5 strategy models (vectorized scoring)
-│   │   ├── quan_ly_chien_luoc.py   # Ensemble: merge all signals + ML routing
-│   │   └── test_chien_luoc.py      # Unit tests cho toàn bộ pipeline
-│   └── logic_bar_to_bar/           # Real-time processing engine (Polars)
-│       └── phan_tich_ky_thuat/     # Cùng features nhưng cho streaming data
+├── chien_luoc/                          # FEATURE ENGINEERING & SIGNAL LAYER
+│   ├── logic_bar_to_bar/                # Engine thời gian thực (Polars, từng nến)
+│   │   ├── phan_tich_ky_thuat/
+│   │   │   ├── xu_huong.py              # EMA, ADX, Ichimoku, Supertrend
+│   │   │   ├── cau_truc_gia.py          # Breakout, Fractal, FVG, ZigZag
+│   │   │   ├── khoi_luong.py            # OBV, VWAP, Volume Profile
+│   │   │   ├── dong_luong_dao_chieu.py  # RSI, MACD, divergence
+│   │   │   ├── bien_dong.py             # ATR, Bollinger, Keltner
+│   │   │   ├── vi_the.py                # CVD, Funding Rate, Order Book
+│   │   │   └── chu_ky.py                # Session: Asian / London / NY
+│   │   ├── chien_luoc/                  # 5 chiến lược (bar-to-bar scoring)
+│   │   │   ├── chien_luoc_breakout.py
+│   │   │   ├── chien_luoc_squeeze.py
+│   │   │   ├── chien_luoc_theo_trend_following.py
+│   │   │   ├── chien_luoc_mean_reversion.py
+│   │   │   └── chien_luoc_scalping.py
+│   │   ├── chien_luoc_trang_thai_thi_truong.py  # Bộ lọc + ML routing
+│   │   ├── chien_luoc_don_bay.py        # Đòn bẩy động theo ATR
+│   │   ├── stoploss_takeprofit.py       # SL/TP động theo ATR
+│   │   └── quan_ly_chien_luoc.py        # Điều phối: ML regime → chiến lược
+│   │
+│   └── logic_vectorized/                # Engine batch (Pandas, toàn bộ dataset)
+│       ├── phan_tich_ky_thuat/          # Cùng 7 module, tính vectorized
+│       ├── chien_luoc/                  # 5 chiến lược (vectorized scoring)
+│       ├── chien_luoc_trang_thai_thi_truong.py  # Bộ lọc thị trường + ML regime
+│       ├── chien_luoc_don_bay.py
+│       ├── stoploss_takeprofit.py
+│       ├── quan_ly_chien_luoc.py        # Tổng hợp tín hiệu + ML gating
+│       └── test_chien_luoc.py           # Unit tests toàn bộ pipeline
 │
-├── ml/                             # ML PIPELINE
-│   ├── main.py                     # Orchestrator: train / evaluate / deploy
+├── ml/                                  # ML PIPELINE
+│   ├── main.py                          # Orchestrator: train / evaluate / deploy
+│   ├── nghien_cuu_regime.py             # Notebook-style regime research
 │   ├── tool/
-│   │   ├── trading_teacher.py      # Auto-labeling: gán nhãn regime từ price data
-│   │   └── data_filter.py          # Preprocessing: noise filter, class balancing
+│   │   ├── trading_teacher.py           # Auto-labeling: gán nhãn regime tự động
+│   │   ├── data_filter.py               # Preprocessing: noise filter, class balance
+│   │   ├── dashboard.py                 # Dashboard phân tích chất lượng model
+│   │   └── regime_tren_ui.py            # Visualize regime trên biểu đồ giá
 │   └── trang_thai_thi_truong_ml/
-│       ├── tao_feature.py          # Feature extraction pipeline (Polars-based)
-│       ├── ml_model.py             # TradingMLP: ResBlock + BatchNorm + Dropout
-│       ├── ml_predict.py           # Inference + confidence scoring
-│       ├── ml_compare.py           # Model versioning & performance comparison
-│       └── du_lieu_ml/             # Model artifacts & training data
-│           ├── model_pytorch.pth   # Trained weights
-│           ├── scaler_params.json  # Feature normalization parameters
-│           └── trading_memory.csv  # Labeled training dataset
+│       ├── tao_feature.py               # Feature extraction (Polars, 18×4 TF = 80 features)
+│       ├── ml_model.py                  # TradingMLP: ResBlock + BatchNorm + Dropout
+│       ├── ml_predict.py                # Inference bar-to-bar & vectorized batch
+│       ├── ml_deploy.py                 # Export & deploy model artifacts
+│       ├── ml_compare.py                # Model versioning & performance comparison
+│       └── du_lieu_ml/                  # Model artifacts & training data
+│           ├── model_pytorch.pth        # Trained weights
+│           ├── scaler_params.json       # Feature normalization parameters
+│           └── trading_memory.csv       # Labeled training dataset
 │
-├── hien_thi/                       # ANALYTICS DASHBOARD
-│   ├── dashboard_backtest.py       # Performance analytics: equity, drawdown, PnL
-│   ├── dashboard_vectorized.py     # Signal visualization: candlestick + indicators
-│   ├── dashboard_realtime.py       # Live monitoring dashboard
-│   └── dashboard_demo.py           # Forward-test performance tracking
+├── chuc_nang/                           # PIPELINE RUNNERS
+│   ├── chay_realtime.py                 # Chạy bot thật (live trading)
+│   ├── chay_demo.py                     # Forward test không rủi ro
+│   ├── backtest_donluong.py             # Bar-to-bar backtest (1 luồng)
+│   ├── backtest_daluong.py              # Bar-to-bar backtest (đa luồng)
+│   └── vectorized_backtest.py           # Vectorized backtest toàn dataset
 │
-├── utils/                          # UTILITIES
-│   ├── ham_tien_ich.py             # MTF data merge (merge_asof, no lookahead)
-│   ├── thoi_gian.py                # Timestamp handling, timezone normalization
-│   ├── doc_cau_hinh.py             # YAML/JSON config parser
-│   └── log.py                      # Structured logging
+├── thuc_thi_lenh/                       # ORDER EXECUTION LAYER
+│   ├── bo_may_thuc_thi.py               # Singleton quản lý kết nối sàn
+│   ├── chon_san_giao_dich.py            # Factory: chọn sàn theo config
+│   ├── mo_lenh.py                       # Mở lệnh đơn sàn
+│   ├── mo_lenh_da_san.py                # Mở lệnh đa sàn song song
+│   ├── dong_lenh.py                     # Đóng lệnh (market/limit)
+│   ├── quan_ly_lenh.py                  # Quản lý trạng thái lệnh đang mở
+│   ├── theo_doi_lenh.py                 # Theo dõi SL/TP, trailing stop
+│   ├── quan_ly_danh_muc.py              # Portfolio: phân bổ vốn đa tài sản
+│   └── ket_noi_san/
+│       ├── binance_api.py
+│       ├── bybit_api.py
+│       └── okx_api.py
 │
-└── du_lieu/                        # DATA STORAGE
-    ├── lich_su_gia/                # Historical OHLCV (CSV/Parquet)
-    ├── du_lieu_vectorized/         # Cleaned datasets for vectorized analysis
-    └── thong_tin_lenh/             # Trade logs for performance analysis
+├── hien_thi/                            # ANALYTICS DASHBOARD (PyQt6)
+│   ├── dashboard_backtest.py            # Equity curve, drawdown, PnL scatter
+│   ├── dashboard_vectorized.py          # Signal visualization trên biểu đồ nến
+│   ├── dashboard_realtime.py            # Live monitoring
+│   └── dashboard_demo.py                # Forward-test performance tracking
+│
+├── thong_bao/                           # NOTIFICATIONS
+│   ├── gui_email.py                     # Gửi báo cáo qua Email
+│   └── gui_telegram.py                  # Cảnh báo real-time qua Telegram
+│
+├── utils/                               # UTILITIES
+│   ├── ham_tien_ich.py                  # MTF data merge, build_htf_candle
+│   ├── doc_cau_hinh.py                  # YAML/JSON config parser
+│   ├── log.py                           # Structured logging
+│   ├── thoi_gian.py                     # Timestamp handling, timezone
+│   ├── chuyen_doi_don_vi.py             # Unit conversion (lot, pip, USDT)
+│   ├── save_dataflie.py                 # Lưu kết quả backtest ra CSV/JSON
+│   └── kho_du_lieu.py                   # Data Warehouse (DuckDB): lưu & SQL analytics
+│
+└── du_lieu/                             # DATA STORAGE
+    ├── lich_su_gia/                     # Historical OHLCV (CSV)
+    ├── du_lieu_vectorized/              # Kết quả vectorized backtest
+    ├── thong_tin_lenh/                  # Trade logs, trạng thái lệnh
+    ├── thong_tin_tai_khoan/             # Snapshot số dư, vị thế
+    ├── kairos_warehouse.duckdb          # Data warehouse – toàn bộ lịch sử backtest
+    └── nhat_ky_hoat_dong.log            # Application log
 ```
 
 -----
 
-<a name="10"></a>
+<a name="11"></a>
 
-## 10. YÊU CẦU & HƯỚNG DẪN CÀI ĐẶT
+## 11. YÊU CẦU & HƯỚNG DẪN CÀI ĐẶT
 
 ```bash
 # Clone và cài đặt dependencies
@@ -413,18 +570,26 @@ pip install -r requirements.txt
 | `pandas`, `polars` | Data processing & feature engineering |
 | `numpy` | Vectorized computations |
 | `pytorch` | ML model training & inference |
-| `scikit-learn` | Preprocessing, metrics |
-| `ccxt` | Exchange API connector (data source) |
+| `scikit-learn`, `joblib` | ML preprocessing, metrics |
+| `ta` | Technical analysis indicators (RSI, ATR, ADX...) |
+| `ccxt` | Exchange API connector — Binance, OKX, Bybit |
+| `requests` | HTTP client cho REST API |
+| `PyYAML` | Đọc file cấu hình YAML |
 | `pyqt6` | Analytics dashboard UI |
+| `pyqtgraph`, `matplotlib` | Charting & visualization |
 | `websocket-client` | Streaming data pipeline |
+| `duckdb` | Embedded SQL analytics — data warehouse cho kết quả backtest |
+| `pyarrow` | Columnar I/O, cầu nối Polars ↔ Pandas |
+| `rich` | Structured terminal logging |
+| `pytest` | Unit testing |
 
 -----
 
-<a name="11"></a>
+<a name="12"></a>
 
-## 11. HƯỚNG DẪN CẤU HÌNH
+## 12. HƯỚNG DẪN CẤU HÌNH
 
-### 11.1 Cấu hình phân tích (YAML)
+### 12.1 Cấu hình phân tích (YAML)
 
 Thiết lập file `config/cau_hinh_giao_dich.yaml` — định nghĩa nguồn dữ liệu và tham số cho pipeline:
 
@@ -443,17 +608,43 @@ cat_lo_percent: 0.1              # Stop-loss threshold (10%)
 chot_loi_percent: 0.15           # Take-profit threshold (15%)
 ```
 
-### 11.2 Khởi chạy
+### 12.2 Khởi chạy
 
 ```bash
-python main.py   # Menu điều hướng → chọn chế độ: Backtest / Demo / Realtime / Vectorized
+python main.py
 ```
+
+Hệ thống hiện CLI menu, nhập số để chọn chế độ:
+
+```
+╔══════════════════════════════════════════════════════╗
+║            KAIROS QUANT SYSTEM  v2                  ║
+╠══════════════════════════════════════════════════════╣
+║                                                      ║
+║   [1]  Giao dich Realtime      (live trading)        ║
+║   [2]  Demo / Paper Trading    (khong rui ro)        ║
+║                                                      ║
+║   [3]  Backtest Don luong      (bar-to-bar)          ║
+║   [4]  Backtest Da luong       (bar-to-bar parallel) ║
+║   [5]  Vectorized Backtest     (toan bo dataset)     ║
+║                                                      ║
+║   [6]  ML Training             (huan luyen model)    ║
+║                                                      ║
+║   [7]  Dashboard Analytics     (GUI PyQt6)           ║
+║                                                      ║
+║   [0]  Thoat                                         ║
+╚══════════════════════════════════════════════════════╝
+
+Chon chuc nang [0-7]:
+```
+
+Import lazy — chỉ load thư viện cần thiết cho chế độ được chọn. PyQt6 không được import khi chạy backtest CLI.
 
 -----
 
-<a name="12"></a>
+<a name="13"></a>
 
-## 12. LỘ TRÌNH PHÁT TRIỂN
+## 13. LỘ TRÌNH PHÁT TRIỂN
 
 * **Alternative Data Integration:** Tích hợp NLP sentiment từ social media, on-chain data, macro economic indicators làm features bổ sung cho ML pipeline.
 * **Reinforcement Learning:** Nâng cấp auto-labeling thành RL agent tự tối ưu strategy parameters thông qua simulation.
@@ -463,11 +654,27 @@ python main.py   # Menu điều hướng → chọn chế độ: Backtest / Demo
 
 -----
 
-<a name="13"></a>
+<a name="14"></a>
 
-## 13. CẢNH BÁO RỦI RO
+## 14. CHIA SẺ CỦA TÁC GIẢ
 
-⚠️ **Lưu ý quan trọng:**
+Tôi bắt đầu Kairos như nhiều dự án quant khác: tin rằng nếu kết hợp đủ nhiều chỉ báo kỹ thuật với machine learning, hệ thống sẽ tự tìm ra edge trong thị trường. Cứ thêm một indicator, thêm một khung thời gian, thêm một lớp ML là mọi thứ sẽ hội tụ về kết quả tốt hơn.
+
+Sau một thời gian xây dựng, tôi nhận ra điều mà cộng đồng quant hay gọi là "the fundamental problem": toàn bộ OHLCV là thông tin công khai, đã được hàng triệu người tham gia thị trường phản ánh vào giá. Một mô hình phân loại trạng thái thị trường từ nến giá không tạo ra thông tin mới — nó chỉ là cách mô tả đẹp hơn về những gì đã xảy ra. Không có edge thực sự ở đó, dù pipeline có tinh vi đến đâu.
+
+Điều này không có nghĩa là dự án vô ích. Quá trình xây dựng Kairos cho tôi hiểu sâu hơn về feature engineering time-series, look-ahead bias, kiến trúc pipeline cho dữ liệu tài chính quy mô lớn — những thứ có giá trị độc lập với việc hệ thống có sinh lời hay không. Tôi cũng hiểu rõ hơn tại sao hầu hết các backtesting framework thương mại đều overfitting: chúng dùng đúng một loại dữ liệu mà thị trường đã định giá xong.
+
+Hướng tôi nghĩ dự án cần đi tiếp là thêm các nguồn dữ liệu có informational edge thực sự: order flow real-time, on-chain metrics (exchange inflow/outflow), cross-asset correlation (DXY, OI, funding rate tổng hợp nhiều sàn). Khi ML có thêm thứ gì đó phi hiển nhiên để học — thứ mà không phải ai cũng thấy được ngay trên biểu đồ — lúc đó nó mới có thể tạo ra giá trị thay vì chỉ phân loại những gì technical analysis đã biết từ lâu.
+
+Kairos v2 là nền tảng kỹ thuật để làm được điều đó. Pipeline đã đúng. Vấn đề là dữ liệu đầu vào.
+
+-----
+
+<a name="15"></a>
+
+## 15. CẢNH BÁO RỦI RO
+
+**Lưu ý quan trọng:**
 
 1. Kết quả backtest dựa trên dữ liệu lịch sử **không đảm bảo hiệu suất tương lai**. Mô hình thống kê chỉ đo lường xác suất — không dự báo chính xác tuyệt đối.
 2. Hệ thống phục vụ mục đích **nghiên cứu và phân tích định lượng**. Người dùng chịu hoàn toàn trách nhiệm cho các quyết định dựa trên output của hệ thống.
@@ -475,15 +682,15 @@ python main.py   # Menu điều hướng → chọn chế độ: Backtest / Demo
 
 -----
 
-📌 **Về mã nguồn:**  
-Repository này là bản nền tảng (v1.0) mang tính Proof-of-Concept về kiến trúc pipeline và phương pháp luận phân tích. Các module nâng cao và phiên bản production được giữ Closed-source.
+**Về mã nguồn:**  
+Repository này là bản nền tảng mang tính Proof-of-Concept về kiến trúc pipeline và phương pháp luận phân tích. Các module nâng cao và phiên bản production được giữ Closed-source.
 
 -----
 
-### 👨‍💻 THÔNG TIN TÁC GIẢ
+### THÔNG TIN TÁC GIẢ
 
 * **Vai trò:** Data Analyst · Quant Researcher
-* **Stack:** Python · Pandas · Polars · PyTorch · PyQt6 · CCXT
+* **Stack:** Python · Pandas · Polars · PyTorch · DuckDB · PyQt6 · CCXT
 * **Phương pháp:** Data-driven design · Statistical validation · Human logic + AI-assisted development
 * **Contact:** ppvinh1513@gmail.com
 

@@ -24,8 +24,8 @@ def them_don_bay_dong(df, don_bay_goc=5, max_leverage=20):
         df['leverage'] = don_bay_goc
         return df
 
-    atr      = df[col_atr].fillna(method='ffill').fillna(0)
-    atr_mean = df[col_mean].fillna(method='ffill').fillna(atr)
+    atr      = df[col_atr].ffill().fillna(0)
+    atr_mean = df[col_mean].ffill().fillna(atr)
 
     vol_ratio = (atr / (atr_mean + 1e-9)).clip(0.3, 3.0)
 

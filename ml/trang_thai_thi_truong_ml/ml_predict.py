@@ -164,17 +164,17 @@ def danh_gia_ml(packet, pnl, dd, correct=None):
     else:
         reward = pnl * 2.0 
 
-    # --- 2. ĐIỀU CHỈNH THEO CHIẾN THUẬT ---
-    if state_name == 'RANGE':
+    # --- 2. ĐIỀU CHỈNH THEO CHIẾN THUẬT (khớp với STATE_MAP) ---
+    if state_name == 'Nhiễu_Động':       # Regime 6 – scalping range hẹp
         if pnl < 0: reward -= 2.0
-        elif pnl > 0 and pnl < 0.5: reward += 0.5
-    elif state_name == 'BREAKOUT':
+        elif 0 < pnl < 0.5: reward += 0.5
+    elif state_name in ('Nén_Chặt', 'Đầu_Xu_Hướng'):   # Regime 1,2 – breakout
         if pnl < 0: reward -= 2.0
         elif pnl > 2.0: reward += 2.0
-    elif state_name == 'XU_HUONG_MANH':
+    elif state_name == 'Xu_Hướng_Mạnh': # Regime 3 – follow trend
         if pnl < 0: reward *= 1.5
         elif pnl > 3.0: reward += 3.0
-    elif state_name == 'DAO_CHIEU':
+    elif state_name in ('Cao_Trào', 'Hồi_Quy'):  # Regime 4,5 – mean reversion
         if pnl < -1.0: reward -= 3.0
         elif pnl > 1.5: reward += 2.0
     else:

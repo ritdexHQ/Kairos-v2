@@ -34,6 +34,7 @@ from chien_luoc.logic_bar_to_bar.chien_luoc_don_bay import phan_tich_don_bay
 from thuc_thi_lenh import quan_ly_lenh
 
 from ml.trang_thai_thi_truong_ml.ml_predict import danh_gia_ml
+from utils.kho_du_lieu import luu_lenh_don, luu_run, tao_run_id
 
 CONFIG = lay_cau_hinh_giao_dich()
 SAN_CHINH = CONFIG.get('san_giao_dich_chinh', 'binance').lower()
@@ -52,6 +53,7 @@ DO_TRUOT_GIA = float(config_demo.get('do_truot_gia'))
 CHUC_NANG = 'demo'
 DANG_CHAY = True
 lich_su_lenh_ao = []
+DEMO_RUN_ID = tao_run_id()
 
 def luong_quet_thi_truong_demo():
     global VON_AO
@@ -142,17 +144,16 @@ def luong_quet_thi_truong_demo():
 
 def luong_quan_ly_vi_the_demo():
     global VON_AO
-    logger.info("🛡️ [DEMO] Bắt đầu quản lý vị thế...")
-    
+    logger.info("[DEMO] Bat dau quan ly vi the...")
+
+    dinh_tai_khoan = VON_AO   # init 1 lần, không reset trong loop
+
     while DANG_CHAY:
         ds_dang_giu = quan_ly_lenh.lay_danh_sach_symbol_dang_co()
-        
+
         if not ds_dang_giu:
             time.sleep(5)
             continue
-
-        # tham số để tính toán drawdown
-        dinh_tai_khoan = VON_AO
 
         for symbol in ds_dang_giu:
             start_time = lay_timestamp_ms()
@@ -201,11 +202,11 @@ def luong_quan_ly_vi_the_demo():
                         if gia_low <= tp_price:
                              can_thoat = True
                              ly_do = f"Chạm giá TP ({gia_low} <= {tp_price})"
-                             gia_dong_du_kien = sl_price
+                             gia_dong_du_kien = tp_price
                         elif gia_high >= sl_price:
                              can_thoat = True
                              ly_do = f"Chạm giá SL ({gia_high} >= {sl_price})"
-                             gia_dong_du_kien = tp_price
+                             gia_dong_du_kien = sl_price
 
                 if not can_thoat:
                     if roe_percent >= CONFIG['chot_loi_percent']:
@@ -236,20 +237,24 @@ def luong_quan_ly_vi_the_demo():
                     logger.info(f"🔴 [DEMO ĐÓNG] {symbol} | Lý do: {ly_do} | Giá: {gia_dong_thuc:,.2f} | PnL: {net_profit:+.2f}$")
                     
                     lich_su = {
-                        'day': datetime.now().strftime('%Y-%m-%d'),
-                        'symbol': symbol,
-                        'side': vt['side'],
+                        'day':        datetime.now().strftime('%Y-%m-%d'),
+                        'symbol':     symbol,
+                        'side':       vt['side'],
                         'entry_price': vt['entry_price'],
                         'exit_price': gia_dong_thuc,
-                        'open_time': vt['time'],
+                        'open_time':  vt['time'],
                         'close_time': datetime.now().strftime('%H:%M:%S'),
-                        'pnl': net_profit,
-                        'score':vt['diem'],
-                        'strategy': chien_luoc,
-                        'reason': ly_do
+                        'pnl':        net_profit,
+                        'score':      vt['diem'],
+                        'strategy':   chien_luoc,
+                        'reason':     ly_do,
+                        'leverage':   vt.get('leverage', 1),
+                        'so_du':      VON_AO,
+                        'packet_ml':  vt.get('packet_ml'),
                     }
 
                     lich_su_lenh_ao.append(lich_su)
+                    luu_lenh_don(DEMO_RUN_ID, 'demo', lich_su)
 
                     quan_ly_lenh.lich_su_lenh(CHUC_NANG, lich_su)
                     
@@ -283,6 +288,7 @@ def chay_demo():
     logger.info(f" {'🏦 Sàn dữ liệu':<20}: {SAN_CHINH.upper():>15}")
     logger.info(f" {'📦 Max Orders':<20}: {MAX_OPEN_ORDERS:>15}")
     quan_ly_lenh.load_trang_thai(CHUC_NANG)
+    luu_run(DEMO_RUN_ID, 'demo', {'von_ban_dau': VON_AO, 'symbols': LIST_COIN})
     logger.info("─"*52)
     print("")
 

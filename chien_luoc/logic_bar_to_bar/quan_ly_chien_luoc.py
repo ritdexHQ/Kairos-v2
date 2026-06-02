@@ -29,7 +29,7 @@ def chien_luoc_vao_lenh(symbol, Datetime, df_1m, df_3m, df_5m, df_15m, df_30m, d
     tin_hieu = 'buy'/'sell'/None. packet_ml dùng để đánh giá AI sau khi đóng lệnh.
     """
 
-    cho_phep, packet = phan_tich_trang_thai_thi_truong(symbol, Datetime, df_1m, df_3m, df_5m, df_15m, df_30m, df_1h)
+    cho_phep, packet = phan_tich_trang_thai_thi_truong(symbol, Datetime, df_1m, df_3m, df_5m, df_15m, df_30m, df_1h, df_4h)
 
     if not cho_phep:
         return None, 0, None, "Filter: Cấm trade", None

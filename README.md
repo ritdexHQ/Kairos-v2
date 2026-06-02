@@ -618,7 +618,7 @@ Hệ thống hiện CLI menu, nhập số để chọn chế độ:
 
 ```
 ╔══════════════════════════════════════════════════════╗
-║            KAIROS QUANT SYSTEM  v2                  ║
+║            KAIROS QUANT SYSTEM  v2                   ║
 ╠══════════════════════════════════════════════════════╣
 ║                                                      ║
 ║   [1]  Giao dich Realtime      (live trading)        ║
